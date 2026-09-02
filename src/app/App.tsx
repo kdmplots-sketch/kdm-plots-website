@@ -440,7 +440,11 @@ function HeroContent() {
 
       {/* CTAs */}
       <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
-        <Btn label="Explore Projects" variant="gold" />
+        <Btn
+  label="Explore Projects"
+  variant="gold"
+  onClick={() => document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" })}
+/>
         <Btn label="Book a Visit" variant="outline-white" icon={false} />
       </div>
     </div>
