@@ -1,4 +1,5 @@
 import React from "react";
+import kdmLogo from "@/imports/KDM Logo Transparant.png";
 import heroBg      from "@/imports/KDM_Plots_Hero_Side-1.png";
 import aboutImg    from "@/imports/ChatGPT_Image_Aug_4__2026__11_49_19_PM.png";
 import whyBg       from "@/imports/ChatGPT_Image_Aug_4__2026__11_48_00_PM-1.png";
@@ -120,31 +121,16 @@ const Ico = {
 // ─────────────────────────────────────────────────────────────────────────────
 function KdmLogo() {
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: "11px" }}>
-      {/* Logo mark */}
-      <div
-        style={{
-          width: "40px", height: "40px", borderRadius: "7px",
-          background: T.navy, display: "flex", alignItems: "center", justifyContent: "center",
-          flexShrink: 0,
-        }}
-      >
-        <svg width="26" height="22" viewBox="0 0 26 22" fill="none">
-          {/* House silhouette */}
-          <path d="M13 1L25 10V21H17.5V14H8.5V21H1V10L13 1Z" fill={T.gold}/>
-          <rect x="17" y="6" width="3" height="4" rx="0.5" fill={T.gold} opacity="0.45"/>
-        </svg>
-      </div>
-      {/* Wordmark */}
-      <div style={{ display: "flex", flexDirection: "column", gap: "1px", lineHeight: 1 }}>
-        <span style={{ fontFamily: T.sans, fontWeight: 800, fontSize: "17px", letterSpacing: "0.2em", color: T.navy }}>
-          KDM
-        </span>
-        <span style={{ fontFamily: T.sans, fontWeight: 400, fontSize: "7.5px", letterSpacing: "0.38em", color: "#9EA3A8", textTransform: "uppercase" }}>
-          PLOTS
-        </span>
-      </div>
-    </div>
+    <img
+      src={kdmLogo}
+      alt="KDM Plots"
+      style={{
+        height: "50px",
+        width: "auto",
+        objectFit: "contain",
+        display: "block",
+      }}
+    />
   );
 }
 
