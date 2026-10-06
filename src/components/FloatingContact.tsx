@@ -65,6 +65,24 @@ function FloatingActionBtn({
 
 export function FloatingContact() {
   const { isMobile } = useVP();
+
+  // Stay out of the way of the hero's CTAs/cards; appear once the visitor
+  // has scrolled past the hero instead of covering it from the start.
+  const [visible, setVisible] = React.useState(false);
+  React.useEffect(() => {
+    let rafId: number;
+    function onScroll() {
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => setVisible(window.scrollY > window.innerHeight * 0.6));
+    }
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      cancelAnimationFrame(rafId);
+    };
+  }, []);
+
   return (
     <div style={{
       position: "fixed", zIndex: 25,
@@ -72,6 +90,10 @@ export function FloatingContact() {
       right: isMobile ? "16px" : "32px",
       display: "flex", flexDirection: "column", alignItems: "center",
       gap: "14px",
+      opacity: visible ? 1 : 0,
+      transform: visible ? "translateY(0)" : "translateY(16px)",
+      pointerEvents: visible ? "auto" : "none",
+      transition: "opacity 0.35s ease, transform 0.35s ease",
     }}>
       <FloatingActionBtn
         href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`}

@@ -9,9 +9,10 @@ export function HeroContent() {
   return (
     <div
       style={{
-        display: "flex", flexDirection: "column", justifyContent: "center",
+        display: "flex", flexDirection: "column",
+        justifyContent: isMobile ? "flex-end" : "center",
         flex: 1,
-        padding: isMobile ? "0 20px" : isTablet ? "0 32px" : "0 56px",
+        padding: isMobile ? "96px 20px 24px" : isTablet ? "0 32px" : "0 56px",
         maxWidth: isMobile ? "100%" : "580px",
         gap: 0,
       }}
@@ -21,6 +22,8 @@ export function HeroContent() {
         style={{
           display: "inline-flex", alignItems: "center", gap: "10px",
           marginBottom: "22px",
+          opacity: 0,
+          animation: "kdmFadeUp 0.8s cubic-bezier(0.22,1,0.36,1) 0.1s forwards",
         }}
       >
         <span style={{ display: "block", width: "28px", height: "1.5px", background: T.gold, borderRadius: T.radiusFull }} />
@@ -45,6 +48,8 @@ export function HeroContent() {
             color: T.white,
             letterSpacing: "-0.01em",
             textShadow: "0 2px 32px rgba(0,0,0,0.22)",
+            opacity: 0,
+            animation: "kdmFadeUp 0.9s cubic-bezier(0.22,1,0.36,1) 0.22s forwards",
           }}
         >
           Build Your
@@ -57,6 +62,8 @@ export function HeroContent() {
             color: T.gold,
             letterSpacing: "-0.01em",
             textShadow: "0 2px 32px rgba(0,0,0,0.20)",
+            opacity: 0,
+            animation: "kdmFadeUp 0.9s cubic-bezier(0.22,1,0.36,1) 0.34s forwards",
           }}
         >
           Legacy
@@ -71,6 +78,8 @@ export function HeroContent() {
           color: T.textBody,
           margin: 0, marginBottom: "38px",
           maxWidth: "370px",
+          opacity: 0,
+          animation: "kdmFadeUp 0.8s cubic-bezier(0.22,1,0.36,1) 0.48s forwards",
         }}
       >
         KDM Plots offers premium residential plots in prime locations with world-class amenities
@@ -78,7 +87,13 @@ export function HeroContent() {
       </p>
 
       {/* CTAs */}
-      <div style={{ display: "flex", alignItems: "center", gap: "14px", flexWrap: "wrap" }}>
+      <div
+        style={{
+          display: "flex", alignItems: "center", gap: "14px", flexWrap: "wrap",
+          opacity: 0,
+          animation: "kdmFadeUp 0.8s cubic-bezier(0.22,1,0.36,1) 0.6s forwards",
+        }}
+      >
         <Btn
   label="Explore Projects"
   variant="gold"

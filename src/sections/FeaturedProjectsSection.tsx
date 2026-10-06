@@ -279,7 +279,7 @@ export function FeaturedProjectsSection() {
         )}
 
         {/* Quote strip */}
-        <div style={{ padding: "32px 80px", display: "flex", justifyContent: "center" }}>
+        <div style={{ padding: isMobile ? "28px 20px" : "32px 80px", display: "flex", justifyContent: "center" }}>
           <p style={{
             fontFamily: T.sans, fontWeight: 400, fontSize: "11px", letterSpacing: "0.20em",
             textTransform: "uppercase", color: "rgba(15,31,53,0.42)", textAlign: "center", margin: 0,

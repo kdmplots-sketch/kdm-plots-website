@@ -1,7 +1,7 @@
 import React from "react";
 import { T, ViewportCtx } from "@/lib/theme";
+import heroImage from "@/imports/KDM_Plots_Hero_Side-1.png";
 import { GlobalStyles } from "@/components/GlobalStyles";
-import { PhotoPlaceholder } from "@/components/PhotoPlaceholder";
 import { Navbar } from "@/components/Navbar";
 import { FloatingContact } from "@/components/FloatingContact";
 import { HeroContent } from "@/components/HeroContent";
@@ -72,7 +72,23 @@ export default function App() {
       >
 
         {/* ── 1. Background surface ── */}
-        <PhotoPlaceholder patternId="grid-hero" />
+        <div
+          style={{
+            position: "absolute", inset: "-6%",
+            animation: "kdmHeroDrift 22s ease-in-out infinite",
+            willChange: "transform",
+          }}
+        >
+          <img
+            src={heroImage}
+            alt="KDM Plots gated community entrance road at sunset, lined with palm trees"
+            style={{
+              width: "100%", height: "100%",
+              objectFit: "cover", objectPosition: isMobile ? "35% center" : "center",
+              display: "block",
+            }}
+          />
+        </div>
 
         {/* ── 2. Warm ivory tint — unifies sky with cream palette ── */}
         <div
@@ -116,13 +132,18 @@ export default function App() {
           {/* Bottom bar: feature card + phone card */}
           <div
             style={{
-              display: "flex", alignItems: "stretch", gap: "14px",
+              display: "flex",
+              flexDirection: isMobile ? "column" : "row",
+              alignItems: "stretch", gap: "14px",
               padding: isMobile ? "0 20px 28px" : "0 52px 64px",
               marginTop: "auto",
               flexWrap: "wrap",
+              opacity: 0,
+              animation: "kdmFadeUp 0.8s cubic-bezier(0.22,1,0.36,1) 0.72s forwards",
             }}
           >
             <PhoneCard />
+            {isMobile && <FeatureCard />}
           </div>
         </div>
       </div>
@@ -135,6 +156,8 @@ export default function App() {
             zIndex: 11,
             padding: "0 52px",
             marginTop: "-28px",
+            opacity: 0,
+            animation: "kdmFadeUp 0.8s cubic-bezier(0.22,1,0.36,1) 0.78s forwards",
           }}
         >
           <FeatureCard />

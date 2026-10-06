@@ -1,21 +1,22 @@
 import React from "react";
-import { T } from "@/lib/theme";
+import { T, useVP } from "@/lib/theme";
 import { Ico } from "@/components/icons/NavIcons";
+import { TiltCard } from "@/components/TiltCard";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Feature Column
 // ─────────────────────────────────────────────────────────────────────────────
 function FeatureCol({
-  icon, title, sub, last = false,
-}: { icon: React.ReactNode; title: string; sub: string; last?: boolean }) {
+  icon, title, sub, last = false, stacked = false,
+}: { icon: React.ReactNode; title: string; sub: string; last?: boolean; stacked?: boolean }) {
   return (
     <div
       style={{
         display: "flex", alignItems: "flex-start", gap: "13px",
         flex: 1,
-        paddingRight: last ? 0 : "24px",
-        marginRight: last ? 0 : "24px",
-        borderRight: last ? "none" : "1px solid rgba(15,31,53,0.09)",
+        paddingRight: stacked || last ? 0 : "24px",
+        marginRight: stacked || last ? 0 : "24px",
+        borderRight: stacked || last ? "none" : "1px solid rgba(15,31,53,0.09)",
       }}
     >
       <div style={{ flexShrink: 0, marginTop: "1px" }}>{icon}</div>
@@ -53,20 +54,32 @@ export const FEATURES = [
 ];
 
 export function FeatureCard() {
+  const { isMobile } = useVP();
   return (
-    <div
+    <TiltCard
+      maxTilt={isMobile ? 0 : 3}
       style={{
         flex: 1,
         background: T.cardBg,
         borderRadius: T.radius,
         boxShadow: T.cardShadow,
-        display: "flex", alignItems: "center",
-        padding: "22px 28px",
+        display: isMobile ? "grid" : "flex",
+        gridTemplateColumns: isMobile ? "1fr 1fr" : undefined,
+        gap: isMobile ? "20px 16px" : undefined,
+        alignItems: "center",
+        padding: isMobile ? "20px" : "22px 28px",
       }}
     >
       {FEATURES.map((f, i) => (
-        <FeatureCol key={f.title} icon={f.icon} title={f.title} sub={f.sub} last={i === FEATURES.length - 1} />
+        <FeatureCol
+          key={f.title}
+          icon={f.icon}
+          title={f.title}
+          sub={f.sub}
+          last={i === FEATURES.length - 1}
+          stacked={isMobile}
+        />
       ))}
-    </div>
+    </TiltCard>
   );
 }

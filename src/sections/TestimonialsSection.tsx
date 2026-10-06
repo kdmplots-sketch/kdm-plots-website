@@ -356,8 +356,9 @@ export function TestimonialsSection() {
 
           {/* Col 1 — headline */}
           <div style={{
-            flex: "0 0 260px", padding: "48px 40px",
-            borderRight: "1px solid rgba(255,255,255,0.07)",
+            flex: isMobile ? "none" : "0 0 260px", padding: isMobile ? "32px 24px" : "48px 40px",
+            borderRight: isMobile ? "none" : "1px solid rgba(255,255,255,0.07)",
+            borderBottom: isMobile ? "1px solid rgba(255,255,255,0.07)" : "none",
             display: "flex", flexDirection: "column", justifyContent: "center",
           }}>
             <h3 style={{
@@ -371,8 +372,9 @@ export function TestimonialsSection() {
 
           {/* Col 2 — rating */}
           <div style={{
-            flex: 1, padding: "48px 32px",
-            borderRight: "1px solid rgba(255,255,255,0.07)",
+            flex: 1, padding: isMobile ? "32px 24px" : "48px 32px",
+            borderRight: isMobile ? "none" : "1px solid rgba(255,255,255,0.07)",
+            borderBottom: isMobile ? "1px solid rgba(255,255,255,0.07)" : "none",
             display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", gap: "10px",
           }}>
             <div style={{ display: "flex", gap: "4px" }}>
@@ -387,8 +389,9 @@ export function TestimonialsSection() {
 
           {/* Col 3 — families */}
           <div style={{
-            flex: 1, padding: "48px 32px",
-            borderRight: "1px solid rgba(255,255,255,0.07)",
+            flex: 1, padding: isMobile ? "32px 24px" : "48px 32px",
+            borderRight: isMobile ? "none" : "1px solid rgba(255,255,255,0.07)",
+            borderBottom: isMobile ? "1px solid rgba(255,255,255,0.07)" : "none",
             display: "flex", alignItems: "center", justifyContent: "center",
           }}>
             <StatCounter value={500} suffix="+" label="Happy Families" visible={statVisible} delay={120} />
@@ -396,8 +399,9 @@ export function TestimonialsSection() {
 
           {/* Col 4 — guarantee */}
           <div style={{
-            flex: 1, padding: "48px 32px",
-            borderRight: "1px solid rgba(255,255,255,0.07)",
+            flex: 1, padding: isMobile ? "32px 24px" : "48px 32px",
+            borderRight: isMobile ? "none" : "1px solid rgba(255,255,255,0.07)",
+            borderBottom: isMobile ? "1px solid rgba(255,255,255,0.07)" : "none",
             display: "flex", alignItems: "center", justifyContent: "center",
           }}>
             <StatCounter value={100} suffix="%" label="Clear Title Guarantee" visible={statVisible} delay={240} />
@@ -405,7 +409,7 @@ export function TestimonialsSection() {
 
           {/* Col 5 — signature statement */}
           <div style={{
-            flex: "0 0 260px", padding: "48px 40px",
+            flex: isMobile ? "none" : "0 0 260px", padding: isMobile ? "32px 24px" : "48px 40px",
             display: "flex", flexDirection: "column", justifyContent: "center", gap: "14px",
           }}>
             <p style={{

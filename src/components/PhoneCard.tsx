@@ -1,12 +1,14 @@
 import { T } from "@/lib/theme";
 import { Ico } from "@/components/icons/NavIcons";
+import { TiltCard } from "@/components/TiltCard";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Phone Card
 // ─────────────────────────────────────────────────────────────────────────────
 export function PhoneCard() {
   return (
-    <div
+    <TiltCard
+      maxTilt={7}
       style={{
         background: T.cardBg,
         borderRadius: T.radius,
@@ -49,6 +51,6 @@ export function PhoneCard() {
           +91 822 056 3394
         </span>
       </div>
-    </div>
+    </TiltCard>
   );
 }
