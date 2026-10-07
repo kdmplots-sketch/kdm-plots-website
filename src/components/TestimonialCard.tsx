@@ -1,19 +1,18 @@
 import React from "react";
-import { T, useVP } from "@/lib/theme";
+import { T } from "@/lib/theme";
 import type { Testimonial } from "@/lib/types";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Testimonials — Single Card
 // ─────────────────────────────────────────────────────────────────────────────
-export function TestimonialCard({ t }: { t: Testimonial }) {
-  const { isMobile } = useVP();
+export function TestimonialCard({ t, width }: { t: Testimonial; width: number }) {
   const [hov, setHov] = React.useState(false);
   return (
     <div
       onMouseEnter={() => setHov(true)}
       onMouseLeave={() => setHov(false)}
       style={{
-        flex: isMobile ? "0 0 300px" : "0 0 288px",
+        flex: `0 0 ${width}px`,
         background: "#FFFFFF",
         borderRadius: "24px",
         padding: "28px 26px 24px",

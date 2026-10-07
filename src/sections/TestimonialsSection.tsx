@@ -86,10 +86,25 @@ export function TestimonialsSection() {
   // ── Carousel state ──
   const n = TESTIMONIALS.length;
   const cloned: Testimonial[] = [...TESTIMONIALS, ...TESTIMONIALS, ...TESTIMONIALS];
-  const CARD_W = isMobile ? 300 : 288;
   const CARD_GAP = 18;
+
+  // On mobile, the card fills the measured viewport width exactly (no fixed
+  // px guess) so it's always centered and never overflows under the arrows.
+  const viewportRef = React.useRef<HTMLDivElement>(null);
+  const [viewportW, setViewportW] = React.useState(0);
+  React.useLayoutEffect(() => {
+    function measure() {
+      if (!viewportRef.current) return;
+      setViewportW(viewportRef.current.clientWidth);
+    }
+    measure();
+    const ro = new ResizeObserver(measure);
+    if (viewportRef.current) ro.observe(viewportRef.current);
+    return () => ro.disconnect();
+  }, []);
+
+  const CARD_W = isMobile ? (viewportW || 300) : 288;
   const STEP = CARD_W + CARD_GAP;
-  const SHOW = 4;
 
   const trackRef    = React.useRef<HTMLDivElement>(null);
   const [pos, setPos]         = React.useState(n);   // index in cloned array
@@ -148,6 +163,18 @@ export function TestimonialsSection() {
     else if (dragDelta > 40) goTo(pos - 1);
     setDragDelta(0);
   }
+
+  // Safety net: if a pointerup/pointercancel is ever missed (common with
+  // touch emulation), this guarantees the card doesn't stay stuck mid-drag.
+  React.useEffect(() => {
+    if (!dragging) return;
+    window.addEventListener("pointerup", onUp);
+    window.addEventListener("pointercancel", onUp);
+    return () => {
+      window.removeEventListener("pointerup", onUp);
+      window.removeEventListener("pointercancel", onUp);
+    };
+  }, [dragging, dragDelta, pos]);
 
   // Wheel
   function onWheel(e: React.WheelEvent) {
@@ -241,7 +268,9 @@ export function TestimonialsSection() {
       >
         <div style={{ maxWidth: "1440px", margin: "0 auto", padding: isMobile ? "0 20px" : isTablet ? "0 40px" : "0 80px", position: "relative" }}>
 
-          {/* Left arrow — floats outside */}
+          {/* Left/Right arrows — overlap the cards on narrow screens, so they
+              only float outside on tablet/desktop; mobile relies on swipe + dots */}
+          {!isMobile && (
           <button
             onClick={() => goTo(pos - 1)}
             aria-label="Previous testimonial"
@@ -261,8 +290,9 @@ export function TestimonialsSection() {
               <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
             </svg>
           </button>
+          )}
 
-          {/* Right arrow — floats outside */}
+          {!isMobile && (
           <button
             onClick={() => goTo(pos + 1)}
             aria-label="Next testimonial"
@@ -282,10 +312,12 @@ export function TestimonialsSection() {
               <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
             </svg>
           </button>
+          )}
 
-          {/* Track viewport */}
+          {/* Track viewport — measured so the mobile card width always matches exactly */}
           <div
-            style={{ overflow: "hidden", padding: "16px 4px 24px" }}
+            ref={viewportRef}
+            style={{ overflow: "hidden", padding: isMobile ? "16px 0 24px" : "16px 4px 24px", touchAction: "pan-y" }}
             onPointerDown={onDown}
             onPointerMove={onMove}
             onPointerUp={onUp}
@@ -306,7 +338,7 @@ export function TestimonialsSection() {
               }}
             >
               {cloned.map((t, i) => (
-                <TestimonialCard key={i} t={t} />
+                <TestimonialCard key={i} t={t} width={CARD_W} />
               ))}
             </div>
           </div>

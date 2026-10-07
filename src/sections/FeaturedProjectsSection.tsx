@@ -2,6 +2,8 @@ import React from "react";
 import { T, useVP } from "@/lib/theme";
 import { CATEGORIES, type Category, type Project, type ProjectStatus } from "@/lib/types";
 import { ProjectCard, ProjectInfoItem, DecorativeBirds } from "@/components/ProjectCard";
+import { useBookingModal } from "@/lib/BookingContext";
+import { useInView } from "@/lib/useInView";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Featured Projects — rebuilt section
@@ -21,21 +23,21 @@ const ALL_PROJECTS: Project[] = [
 // ─────────────────────────────────────────────────────────────────────────────
 // Featured Projects — Section
 // ─────────────────────────────────────────────────────────────────────────────
-// ── Remove from DISABLED_TABS to enable that tab ──
-const DISABLED_TABS = new Set<Category>(["Upcoming"]);
 const GAP_PX = 18;
+const AUTOPLAY_MS = 4500;
 
 export function FeaturedProjectsSection() {
   const { isMobile, isTablet } = useVP();
+  const { open: openBooking } = useBookingModal();
   const [activeCategory, setActiveCategory] = React.useState<Category>("Ongoing");
   const containerRef = React.useRef<HTMLDivElement>(null);
   const trackRef     = React.useRef<HTMLDivElement>(null);
   const [cardW, setCardW]   = React.useState(0);
   const [sliding, setSliding] = React.useState(false);
+  const [autoPaused, setAutoPaused] = React.useState(false);
+  const [revealRef, revealed] = useInView(0.1);
 
-  const source: Project[] = activeCategory === "All Projects"
-    ? ALL_PROJECTS
-    : ALL_PROJECTS.filter(p => p.status === activeCategory as ProjectStatus);
+  const source: Project[] = ALL_PROJECTS.filter(p => p.status === activeCategory as ProjectStatus);
 
   const n = source.length; // 9 for Ongoing
 
@@ -65,13 +67,20 @@ export function FeaturedProjectsSection() {
     const ro = new ResizeObserver(measure);
     if (containerRef.current) ro.observe(containerRef.current);
     return () => ro.disconnect();
-  }, []);
+  }, [isMobile, isTablet]);
 
   function go(dir: 1 | -1) {
     if (sliding || !cardW) return;
     setSliding(true);
     setTrackPos(prev => prev + dir);
   }
+
+  // ── Auto-swipe — advances on its own, pauses on hover/touch or mid-transition ──
+  React.useEffect(() => {
+    if (autoPaused || sliding || n <= 1 || !cardW) return;
+    const id = setTimeout(() => go(1), AUTOPLAY_MS);
+    return () => clearTimeout(id);
+  }, [autoPaused, sliding, n, cardW, trackPos]);
 
   // ── KEY FIX: only respond to this track's OWN transform transition ──
   // Child card transitions (hover lift, image zoom) also fire transitionend
@@ -105,7 +114,15 @@ export function FeaturedProjectsSection() {
     <section style={{ position: "relative", width: "100%", background: T.ivory, overflow: "hidden" }}>
 
 
-      <div style={{ position: "relative", zIndex: 2 }}>
+      <div
+        ref={revealRef}
+        style={{
+          position: "relative", zIndex: 2,
+          opacity: revealed ? 1 : 0,
+          transform: revealed ? "translateY(0)" : "translateY(32px)",
+          transition: "opacity 0.8s cubic-bezier(0.22,1,0.36,1), transform 0.8s cubic-bezier(0.22,1,0.36,1)",
+        }}
+      >
 
         {/* ════ CENTERED HEADER ════ */}
         <div style={{ maxWidth: "1440px", margin: "0 auto", padding: isMobile ? "72px 20px 0" : isTablet ? "80px 40px 0" : "96px 80px 0", position: "relative" }}>
@@ -157,19 +174,18 @@ export function FeaturedProjectsSection() {
             }}
           >
             {CATEGORIES.map(cat => {
-              const isActive   = activeCategory === cat;
-              const isDisabled = DISABLED_TABS.has(cat);
+              const isActive = activeCategory === cat;
               return (
-                <button key={cat} onClick={() => { if (!isDisabled) setActiveCategory(cat); }} disabled={isDisabled}
+                <button key={cat} onClick={() => setActiveCategory(cat)}
                   style={{
                     padding: "8px 22px", borderRadius: "9999px",
-                    border: `1.5px solid ${isActive ? T.gold : isDisabled ? "rgba(15,31,53,0.09)" : "rgba(15,31,53,0.20)"}`,
+                    border: `1.5px solid ${isActive ? T.gold : "rgba(15,31,53,0.20)"}`,
                     background: isActive ? T.gold : "transparent",
                     fontFamily: T.sans, fontWeight: isActive ? 700 : 500,
                     fontSize: "12px", letterSpacing: "0.06em",
-                    color: isActive ? T.white : isDisabled ? "rgba(15,31,53,0.26)" : "#5B6B82",
-                    cursor: isDisabled ? "not-allowed" : "pointer",
-                    transition: "all 0.2s", opacity: isDisabled ? 0.45 : 1,
+                    color: isActive ? T.white : "#5B6B82",
+                    cursor: "pointer",
+                    transition: "all 0.2s",
                     flexShrink: 0, whiteSpace: "nowrap",
                   }}>
                   {cat}
@@ -248,7 +264,15 @@ export function FeaturedProjectsSection() {
             </div>
           </div>
         ) : (
-        <div ref={containerRef} style={{ maxWidth: "1440px", margin: "0 auto", padding: isMobile ? "0 20px" : isTablet ? "0 40px" : "0 80px", overflow: "hidden" }}>
+        <div style={{ maxWidth: "1440px", margin: "0 auto", padding: isMobile ? "0 20px" : isTablet ? "0 40px" : "0 80px" }}>
+        <div
+          ref={containerRef}
+          onMouseEnter={() => setAutoPaused(true)}
+          onMouseLeave={() => setAutoPaused(false)}
+          onTouchStart={() => setAutoPaused(true)}
+          onTouchEnd={() => setAutoPaused(false)}
+          style={{ overflow: "hidden" }}
+        >
           {cardW > 0 && (
             <div
               ref={trackRef}
@@ -259,7 +283,7 @@ export function FeaturedProjectsSection() {
                 alignItems: "flex-start",
                 transform: `translateX(${translateX}px)`,
                 // Animate ONLY when sliding; removed to "none" during silent index jump
-                transition: sliding ? "transform 0.52s cubic-bezier(0.25,1,0.5,1)" : "none",
+                transition: sliding ? "transform 0.68s cubic-bezier(0.22,1,0.36,1)" : "none",
                 willChange: "transform",
               }}
             >
@@ -267,14 +291,12 @@ export function FeaturedProjectsSection() {
                 // key=domIdx is STABLE — this DOM node always shows clonedTrack[domIdx]
                 // project data is permanently bound to this position; it never swaps
                 <div key={domIdx} style={{ flex: `0 0 ${cardW}px` }}>
-                  <ProjectCard
-                    project={project}
-                    featured={domIdx === trackPos}
-                  />
+                  <ProjectCard project={project} />
                 </div>
               ))}
             </div>
           )}
+        </div>
         </div>
         )}
 
@@ -292,7 +314,7 @@ export function FeaturedProjectsSection() {
         {/* ════ BOTTOM INFO STRIP ════ */}
         <div style={{ background: T.white, borderTop: "1px solid rgba(193,153,46,0.12)" }}>
           <div style={{ maxWidth: "1440px", margin: "0 auto", padding: isMobile ? "28px 20px" : "34px 80px", display: "flex", flexDirection: isMobile ? "column" : "row", alignItems: isMobile ? "stretch" : "center", gap: isMobile ? "20px" : "0" }}>
-            <div style={{ flex: 1, display: "flex", alignItems: "center", flexDirection: isMobile ? "column" : "row", gap: isMobile ? "16px" : "0" }}>
+            <div style={{ flex: 1, display: "flex", alignItems: isMobile ? "stretch" : "center", flexDirection: isMobile ? "column" : "row", gap: isMobile ? "16px" : "0" }}>
               <ProjectInfoItem
                 icon={<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={T.gold} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>}
                 title="Visit Our Site" desc="Experience the layout in person."
@@ -307,6 +329,7 @@ export function FeaturedProjectsSection() {
               />
             </div>
             <button
+              onClick={openBooking}
               style={{
                 display: "inline-flex", alignItems: "center", gap: "9px",
                 padding: "13px 30px", border: `1.5px solid ${T.navy}`, borderRadius: "5px",

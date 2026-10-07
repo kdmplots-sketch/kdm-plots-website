@@ -2,12 +2,14 @@ import React from "react";
 import { T, useVP } from "@/lib/theme";
 import { useInView } from "@/lib/useInView";
 import { PhotoPlaceholder } from "@/components/PhotoPlaceholder";
+import { useBookingModal } from "@/lib/BookingContext";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // CTA — Section
 // ─────────────────────────────────────────────────────────────────────────────
 export function CtaSection() {
   const { isMobile, isTablet } = useVP();
+  const { open: openBooking } = useBookingModal();
   const [ref, visible] = useInView(0.14);
   const [hovBook, setHovBook] = React.useState(false);
   const [hovCall, setHovCall] = React.useState(false);
@@ -77,6 +79,7 @@ export function CtaSection() {
           <div style={{ display: "flex", alignItems: "center", gap: "14px", flexWrap: "wrap" }}>
             {/* Primary */}
             <button
+              onClick={openBooking}
               onMouseEnter={() => setHovBook(true)}
               onMouseLeave={() => setHovBook(false)}
               style={{

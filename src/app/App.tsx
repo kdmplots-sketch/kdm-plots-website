@@ -4,6 +4,10 @@ import heroImage from "@/imports/KDM_Plots_Hero_Side-1.png";
 import { GlobalStyles } from "@/components/GlobalStyles";
 import { Navbar } from "@/components/Navbar";
 import { FloatingContact } from "@/components/FloatingContact";
+import { BookVisitModal } from "@/components/BookVisitModal";
+import { BookingModalProvider } from "@/lib/BookingContext";
+import { ProjectGalleryModal } from "@/components/ProjectGalleryModal";
+import { ProjectGalleryProvider } from "@/lib/ProjectGalleryContext";
 import { HeroContent } from "@/components/HeroContent";
 import { PhoneCard } from "@/components/PhoneCard";
 import { FeatureCard } from "@/components/FeatureCard";
@@ -42,6 +46,8 @@ export default function App() {
 
   return (
     <ViewportCtx.Provider value={vpCtxValue}>
+    <BookingModalProvider render={(isOpen, close) => <BookVisitModal isOpen={isOpen} onClose={close} />}>
+    <ProjectGalleryProvider render={(project, close) => <ProjectGalleryModal project={project} onClose={close} />}>
     <GlobalStyles />
     {/* Navbar — fixed to the viewport, stays visible through the whole page scroll */}
     <Navbar />
@@ -186,6 +192,8 @@ export default function App() {
       <div id="contact"><CtaSection /></div>
       <SiteFooter />
     </div>
+    </ProjectGalleryProvider>
+    </BookingModalProvider>
     </ViewportCtx.Provider>
   );
 }

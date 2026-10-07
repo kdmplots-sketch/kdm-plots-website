@@ -1,11 +1,13 @@
 import { T, useVP } from "@/lib/theme";
 import { Btn } from "@/components/Btn";
+import { useBookingModal } from "@/lib/BookingContext";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Hero Content (left column)
 // ─────────────────────────────────────────────────────────────────────────────
 export function HeroContent() {
   const { isMobile, isTablet } = useVP();
+  const { open: openBooking } = useBookingModal();
   return (
     <div
       style={{
@@ -99,7 +101,7 @@ export function HeroContent() {
   variant="gold"
   onClick={() => document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" })}
 />
-        <Btn label="Book a Visit" variant="outline-white" icon={false} />
+        <Btn label="Book a Visit" variant="outline-white" icon={false} onClick={openBooking} />
       </div>
     </div>
   );

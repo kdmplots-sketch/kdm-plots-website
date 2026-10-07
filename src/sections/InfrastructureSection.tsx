@@ -5,6 +5,7 @@ import { PhotoPlaceholder } from "@/components/PhotoPlaceholder";
 import { InfraFeatureItem, AmenityCard } from "@/components/AmenityCard";
 import { CarouselArrow } from "@/components/CarouselArrow";
 import { IcoRoads, IcoStreetLight, IcoDrainage, IcoPlantation, IcoSecurityShield, IcoElectricity, IcoWater, IcoDTCP } from "@/components/icons/InfrastructureIcons";
+import { useBookingModal } from "@/lib/BookingContext";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Infrastructure Section — Amenity Data
@@ -30,6 +31,7 @@ const AMENITIES: Amenity[] = [
 // ─────────────────────────────────────────────────────────────────────────────
 export function InfrastructureSection() {
   const { isMobile, isTablet } = useVP();
+  const { open: openBooking } = useBookingModal();
   const CARD_W  = isMobile ? 220 : 260;
   const CARD_GAP = 16;
   const STEP    = CARD_W + CARD_GAP;
@@ -38,11 +40,21 @@ export function InfrastructureSection() {
   const [dragging, setDragging]   = React.useState(false);
   const [startX, setStartX]       = React.useState(0);
   const [dragDelta, setDragDelta] = React.useState(0);
+  const [autoPaused, setAutoPaused] = React.useState(false);
   const maxOffset = Math.max(0, (AMENITIES.length - VISIBLE_COUNT) * STEP);
 
   function slideBy(delta: number) {
     setOffset(prev => Math.min(maxOffset, Math.max(0, prev + delta)));
   }
+
+  // ── Auto-swipe — loops back to the start once it reaches the end ──
+  React.useEffect(() => {
+    if (autoPaused || dragging || maxOffset <= 0) return;
+    const id = setInterval(() => {
+      setOffset(prev => (prev >= maxOffset ? 0 : Math.min(maxOffset, prev + STEP)));
+    }, 4000);
+    return () => clearInterval(id);
+  }, [autoPaused, dragging, maxOffset, STEP]);
 
   function onPointerDown(e: React.PointerEvent) {
     setDragging(true);
@@ -60,6 +72,18 @@ export function InfrastructureSection() {
     if (Math.abs(dragDelta) > 30) slideBy(dragDelta < 0 ? STEP : -STEP);
     setDragDelta(0);
   }
+
+  // Safety net: if a pointerup/pointercancel is ever missed (common with
+  // touch emulation), this guarantees the track doesn't stay stuck mid-drag.
+  React.useEffect(() => {
+    if (!dragging) return;
+    window.addEventListener("pointerup", onPointerUp);
+    window.addEventListener("pointercancel", onPointerUp);
+    return () => {
+      window.removeEventListener("pointerup", onPointerUp);
+      window.removeEventListener("pointercancel", onPointerUp);
+    };
+  }, [dragging, dragDelta]);
 
   return (
     <section style={{ position: "relative", background: T.ivory, overflow: "hidden", width: "100%" }}>
@@ -145,10 +169,12 @@ export function InfrastructureSection() {
           borderRadius: "16px",
           border: "1px solid rgba(193,153,46,0.13)",
           boxShadow: "0 8px 48px rgba(8,14,28,0.08), 0 2px 12px rgba(8,14,28,0.04)",
-          padding: isMobile ? "24px 12px" : "36px 20px",
-          display: "flex", alignItems: "flex-start",
-          flexWrap: isMobile ? "wrap" : "nowrap",
-          gap: isMobile ? "8px 0" : "0",
+          padding: isMobile ? "28px 16px" : "36px 20px",
+          display: "grid",
+          gridTemplateColumns: isMobile ? "repeat(2, 1fr)" : isTablet ? "repeat(4, 1fr)" : "repeat(8, 1fr)",
+          alignItems: "start",
+          rowGap: isMobile ? "26px" : isTablet ? "28px" : "0",
+          columnGap: 0,
         }}>
           <InfraFeatureItem icon={<IcoRoads />}         title="Wide Blacktop Roads"      desc="30 / 40 / 50 / 60 FT" />
           <InfraFeatureItem icon={<IcoStreetLight />}    title="LED Street Lights"        desc="Energy Efficient" />
@@ -177,11 +203,15 @@ export function InfrastructureSection() {
 
         {/* Draggable track */}
         <div
-          style={{ overflow: "hidden", cursor: dragging ? "grabbing" : "grab" }}
+          style={{ overflow: "hidden", cursor: dragging ? "grabbing" : "grab", touchAction: "pan-y" }}
           onPointerDown={onPointerDown}
           onPointerMove={onPointerMove}
           onPointerUp={onPointerUp}
           onPointerCancel={onPointerUp}
+          onMouseEnter={() => setAutoPaused(true)}
+          onMouseLeave={() => setAutoPaused(false)}
+          onTouchStart={() => setAutoPaused(true)}
+          onTouchEnd={() => setAutoPaused(false)}
         >
           <div style={{
             display: "flex",
@@ -207,7 +237,7 @@ export function InfrastructureSection() {
           border: "1px solid rgba(193,153,46,0.12)",
           boxShadow: "0 4px 32px rgba(8,14,28,0.07), 0 1px 8px rgba(8,14,28,0.04)",
           padding: isMobile ? "24px 20px" : "36px 48px",
-          display: "flex", alignItems: "center",
+          display: "flex", alignItems: isMobile ? "stretch" : "center",
           flexDirection: isMobile ? "column" : "row",
           gap: isMobile ? "20px" : "0",
         }}>
@@ -246,10 +276,12 @@ export function InfrastructureSection() {
           </div>
 
           {/* CTA */}
-          <div style={{ flex: "0 0 auto", paddingLeft: "32px" }}>
+          <div style={{ flex: "0 0 auto", paddingLeft: isMobile ? "0" : "32px", width: isMobile ? "100%" : "auto" }}>
             <button
+              onClick={openBooking}
               style={{
-                display: "inline-flex", alignItems: "center", gap: "10px",
+                display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "10px",
+                width: isMobile ? "100%" : "auto",
                 padding: "14px 30px",
                 border: `1.5px solid ${T.gold}`,
                 borderRadius: "6px",
@@ -259,6 +291,7 @@ export function InfrastructureSection() {
                 textTransform: "uppercase", color: T.navy,
                 cursor: "pointer", transition: "all 0.25s ease",
                 whiteSpace: "nowrap",
+                boxSizing: "border-box",
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.background = T.gold;

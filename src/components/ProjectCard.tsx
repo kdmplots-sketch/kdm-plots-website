@@ -2,6 +2,7 @@ import React from "react";
 import { T, useVP } from "@/lib/theme";
 import type { Project } from "@/lib/types";
 import { PhotoPlaceholder } from "@/components/PhotoPlaceholder";
+import { useProjectGallery } from "@/lib/ProjectGalleryContext";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Featured Projects — reusable pieces
@@ -43,14 +44,26 @@ export function ApprovalBadge({ label, compact = false }: { label: string; compa
 // ─────────────────────────────────────────────────────────────────────────────
 // Featured Projects — Project Card (reusable, fully editable)
 // ─────────────────────────────────────────────────────────────────────────────
-// featured=true → large card (left slot), featured=false → compact card (right slots)
-export function ProjectCard({ project, featured = false }: { project: Project; featured?: boolean }) {
+// Every card in the row is the same size — scaled responsively by viewport,
+// not by "featured" position, so the carousel stays visually even.
+export function ProjectCard({ project }: { project: Project }) {
   const [hovered, setHovered] = React.useState(false);
+  const { open: openGallery } = useProjectGallery();
+  const { isMobile } = useVP();
 
-  const cardH = featured ? 480 : 340;
+  const cardH       = isMobile ? 320 : 340;
+  const titleSize   = isMobile ? "21px" : "18px";
+  const padBottom   = isMobile ? "24px 22px 20px" : "18px 18px 16px";
+  const contentGap  = isMobile ? "9px" : "7px";
+  const badgeGap    = isMobile ? "10px" : "8px";
 
   return (
     <div
+      role="button"
+      tabIndex={0}
+      aria-label={`View photos for ${project.title}`}
+      onClick={() => openGallery(project)}
+      onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openGallery(project); } }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
@@ -76,19 +89,8 @@ export function ProjectCard({ project, featured = false }: { project: Project; f
       {/* Gradient overlay */}
       <div style={{
         position: "absolute", inset: 0,
-        background: featured
-          ? "linear-gradient(to top, rgba(6,12,24,0.97) 0%, rgba(6,12,24,0.62) 42%, rgba(6,12,24,0.12) 100%)"
-          : "linear-gradient(to top, rgba(6,12,24,0.95) 0%, rgba(6,12,24,0.55) 50%, rgba(6,12,24,0.10) 100%)",
+        background: "linear-gradient(to top, rgba(6,12,24,0.95) 0%, rgba(6,12,24,0.55) 50%, rgba(6,12,24,0.10) 100%)",
       }} />
-
-      {/* Gold top accent line on featured card */}
-      {featured && (
-        <div style={{
-          position: "absolute", top: 0, left: 0, right: 0,
-          height: "3px",
-          background: `linear-gradient(90deg, ${T.gold}, rgba(193,153,46,0.4))`,
-        }} />
-      )}
 
       {/* Status badge — top left */}
       <div style={{ position: "absolute", top: "16px", left: "16px" }}>
@@ -111,14 +113,14 @@ export function ProjectCard({ project, featured = false }: { project: Project; f
       {/* Bottom content */}
       <div style={{
         position: "absolute", bottom: 0, left: 0, right: 0,
-        padding: featured ? "28px 24px 22px" : "18px 18px 16px",
+        padding: padBottom,
         display: "flex", flexDirection: "column",
-        gap: featured ? "11px" : "7px",
+        gap: contentGap,
       }}>
         {/* KDM brand label */}
         <span style={{
           fontFamily: T.sans, fontWeight: 700,
-          fontSize: featured ? "10px" : "8.5px",
+          fontSize: "8.5px",
           letterSpacing: "0.25em", textTransform: "uppercase",
           color: T.gold, opacity: 0.85,
         }}>KDM</span>
@@ -126,7 +128,7 @@ export function ProjectCard({ project, featured = false }: { project: Project; f
         {/* Project name */}
         <h3 style={{
           fontFamily: T.serif, fontWeight: 700,
-          fontSize: featured ? "28px" : "18px",
+          fontSize: titleSize,
           lineHeight: 1.15, color: T.white, margin: 0,
         }}>
           {project.title}
@@ -137,7 +139,7 @@ export function ProjectCard({ project, featured = false }: { project: Project; f
           <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke={T.gold} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <path d="M12 2C8.686 2 6 5 6 8.5c0 5 6 12 6 12s6-7 6-12C18 5 15.314 2 12 2z"/><circle cx="12" cy="8.5" r="2"/>
           </svg>
-          <span style={{ fontFamily: T.sans, fontSize: featured ? "11.5px" : "10px", color: "rgba(255,255,255,0.68)", fontWeight: 400 }}>
+          <span style={{ fontFamily: T.sans, fontSize: "10px", color: "rgba(255,255,255,0.68)", fontWeight: 400 }}>
             {project.location}
           </span>
         </div>
@@ -145,13 +147,19 @@ export function ProjectCard({ project, featured = false }: { project: Project; f
         {/* Thin divider */}
         <div style={{ height: "1px", background: "rgba(255,255,255,0.11)", margin: "1px 0" }} />
 
-        {/* Badges + CTA */}
-        <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: "6px" }}>
-          <div style={{ display: "flex", gap: featured ? "12px" : "8px" }}>
-            {project.dtcp  && <ApprovalBadge label="DTCP Approved"    compact={!featured} />}
-            {project.rera  && <ApprovalBadge label="RERA Approved"    compact={!featured} />}
-            {project.prime && <ApprovalBadge label="Prime Location"   compact={!featured} />}
-            {project.infra && <ApprovalBadge label="Premium Infra"    compact={!featured} />}
+        {/* Badges + CTA — stacks on mobile so nothing clips/overlaps on narrow cards */}
+        <div style={{
+          display: "flex",
+          flexDirection: isMobile ? "column" : "row",
+          alignItems: isMobile ? "flex-start" : "flex-end",
+          justifyContent: "space-between",
+          gap: isMobile ? "12px" : "6px",
+        }}>
+          <div style={{ display: "flex", flexWrap: isMobile ? "wrap" : "nowrap", rowGap: "10px", gap: badgeGap }}>
+            {project.dtcp  && <ApprovalBadge label="DTCP Approved"    compact />}
+            {project.rera  && <ApprovalBadge label="RERA Approved"    compact />}
+            {project.prime && <ApprovalBadge label="Prime Location"   compact />}
+            {project.infra && <ApprovalBadge label="Premium Infra"    compact />}
           </div>
           <button
             aria-label={`Explore ${project.title}`}
@@ -159,10 +167,11 @@ export function ProjectCard({ project, featured = false }: { project: Project; f
             display: "inline-flex", alignItems: "center", gap: "5px",
             background: "transparent", border: "none",
             fontFamily: T.sans, fontWeight: 700,
-            fontSize: featured ? "11px" : "9px",
+            fontSize: "9px",
             letterSpacing: "0.14em", textTransform: "uppercase",
             color: T.gold, cursor: "pointer", padding: 0,
             whiteSpace: "nowrap", flexShrink: 0,
+            alignSelf: isMobile ? "flex-end" : "auto",
           }}>
             Explore Project
             <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke={T.gold} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">

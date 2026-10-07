@@ -2,6 +2,7 @@ import React from "react";
 import { T, useVP } from "@/lib/theme";
 import { KdmLogo } from "@/components/KdmLogo";
 import { Btn } from "@/components/Btn";
+import { useBookingModal } from "@/lib/BookingContext";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Nav Link
@@ -58,6 +59,7 @@ export const NAV_LINKS = [
 export function Navbar() {
   const { isMobile, isTablet } = useVP();
   const [menuOpen, setMenuOpen] = React.useState(false);
+  const { open: openBooking } = useBookingModal();
 
   // Close menu on Escape key
   React.useEffect(() => {
@@ -115,9 +117,9 @@ export function Navbar() {
           {/* Logo — inner core, its own tight pill */}
           <div style={{
             display: "flex", alignItems: "center", flexShrink: 0,
-            padding: isMobile ? "0 8px 0 12px" : "4px 10px 4px 16px",
+            padding: isMobile ? "0 8px 0 18px" : "4px 10px 4px 16px",
           }}>
-            <div style={{ transform: isMobile ? "scale(0.62)" : "scale(0.74)", transformOrigin: "left center" }}>
+            <div style={{ transform: isMobile ? "scale(0.72)" : "scale(0.74)", transformOrigin: "left center" }}>
               <KdmLogo />
             </div>
           </div>
@@ -135,7 +137,7 @@ export function Navbar() {
           )}
 
           <div style={{ display: "flex", alignItems: "center", gap: "10px", paddingRight: showHamburger ? "6px" : "4px", flexShrink: 0 }}>
-            {!showHamburger && <Btn label="Book a Visit" variant="gold" size="sm" />}
+            {!showHamburger && <Btn label="Book a Visit" variant="gold" size="sm" onClick={openBooking} />}
 
             {/* Hamburger → X morph */}
             {showHamburger && (
@@ -223,7 +225,7 @@ export function Navbar() {
             transform: menuOpen ? "translateY(0)" : "translateY(28px)",
             transition: `opacity 0.5s ${EASE} ${menuOpen ? NAV_LINKS.length * 55 + 100 : 0}ms, transform 0.5s ${EASE} ${menuOpen ? NAV_LINKS.length * 55 + 100 : 0}ms`,
           }}>
-            <Btn label="Book a Visit" variant="gold" size="md" />
+            <Btn label="Book a Visit" variant="gold" size="md" onClick={() => { setMenuOpen(false); openBooking(); }} />
           </div>
         </div>
       )}

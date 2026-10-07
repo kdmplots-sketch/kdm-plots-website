@@ -12,23 +12,23 @@ export function InfraFeatureItem({
   const { isMobile } = useVP();
   return (
     <div style={{
-      flex: isMobile ? "0 0 25%" : 1,
       display: "flex", flexDirection: "column",
       alignItems: "center", textAlign: "center",
-      padding: isMobile ? "8px 4px" : "0 16px",
-      borderRight: last ? "none" : "1px solid rgba(15,31,53,0.08)",
+      padding: isMobile ? "4px 6px 0" : "0 16px",
+      borderRight: (last || isMobile) ? "none" : "1px solid rgba(15,31,53,0.08)",
       boxSizing: "border-box",
+      minWidth: 0,
     }}>
       <div style={{ marginBottom: "12px" }}>{icon}</div>
       <p style={{
         fontFamily: T.sans, fontWeight: 700,
-        fontSize: "9px", letterSpacing: "0.13em",
+        fontSize: isMobile ? "10px" : "9px", letterSpacing: "0.12em",
         textTransform: "uppercase", color: T.navy,
         margin: 0, marginBottom: "5px", lineHeight: 1.4,
       }}>{title}</p>
       <p style={{
         fontFamily: T.sans, fontWeight: 400,
-        fontSize: "10px", color: "#5B6B82",
+        fontSize: isMobile ? "10.5px" : "10px", color: "#5B6B82",
         margin: 0, lineHeight: 1.5,
       }}>{desc}</p>
     </div>

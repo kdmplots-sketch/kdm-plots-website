@@ -36,6 +36,7 @@ export function InvestFeature({ icon, title, desc }: { icon: React.ReactNode; ti
 export function TimelineMilestone({
   icon, label, title, desc, delay, visible,
 }: { icon: React.ReactNode; label: string; title: string; desc: string; delay: number; visible: boolean }) {
+  const { isMobile } = useVP();
   return (
     <div style={{
       flex: 1, display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center",
@@ -56,7 +57,9 @@ export function TimelineMilestone({
       </div>
       <span style={{ fontFamily: T.sans, fontWeight: 800, fontSize: "9px", letterSpacing: "0.22em", textTransform: "uppercase", color: T.gold, marginBottom: "6px", display: "block" }}>{label}</span>
       <p style={{ fontFamily: T.serif, fontWeight: 700, fontSize: "15px", color: T.navy, margin: 0, marginBottom: "6px", lineHeight: 1.25 }}>{title}</p>
-      <p style={{ fontFamily: T.sans, fontWeight: 400, fontSize: "11px", color: "#5B6B82", margin: 0, lineHeight: 1.6, maxWidth: "120px" }}>{desc}</p>
+      {/* On mobile each milestone has the full width to itself, so the text
+          isn't squeezed into the narrow column the desktop row layout needs */}
+      <p style={{ fontFamily: T.sans, fontWeight: 400, fontSize: "11px", color: "#5B6B82", margin: 0, lineHeight: 1.6, maxWidth: isMobile ? "260px" : "120px" }}>{desc}</p>
     </div>
   );
 }

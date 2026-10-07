@@ -155,13 +155,16 @@ export function InvestmentSection() {
           {/* Timeline track */}
           <div style={{ position: "relative" }}>
 
-            {/* Connecting gold line */}
-            <div style={{
-              position: "absolute",
-              top: "26px", left: "10%", right: "10%", height: "1.5px",
-              background: `linear-gradient(to right, transparent, ${T.gold} 8%, ${T.gold} 92%, transparent)`,
-              opacity: 0.45,
-            }} />
+            {/* Connecting gold line — only meaningful in the desktop row layout;
+                on mobile the milestones stack vertically so there's nothing to connect */}
+            {!isMobile && (
+              <div style={{
+                position: "absolute",
+                top: "26px", left: "10%", right: "10%", height: "1.5px",
+                background: `linear-gradient(to right, transparent, ${T.gold} 8%, ${T.gold} 92%, transparent)`,
+                opacity: 0.45,
+              }} />
+            )}
 
             {/* Milestones */}
             <div style={{ display: "flex", flexDirection: isMobile ? "column" : "row", gap: isMobile ? "32px" : "0", position: "relative", zIndex: 2 }}>
@@ -216,7 +219,10 @@ export function InvestmentSection() {
                 <em style={{ color: "rgba(255,255,255,0.35)", fontStyle: "normal", fontSize: "11px" }}>Historical estimates based on regional market trends.</em>
               </p>
             </div>
-            <div style={{ width: "1px", height: "56px", background: "rgba(255,255,255,0.10)", flexShrink: 0 }} />
+            <div style={isMobile
+              ? { width: "100%", height: "1px", background: "rgba(255,255,255,0.10)", flexShrink: 0 }
+              : { width: "1px", height: "56px", background: "rgba(255,255,255,0.10)", flexShrink: 0 }
+            } />
             <p style={{ fontFamily: T.sans, fontWeight: 400, fontSize: "14px", color: "rgba(255,255,255,0.55)", margin: 0, lineHeight: 1.75, maxWidth: "480px" }}>
               Real estate in prime locations has consistently outperformed other
               asset classes over the long term. KDM Plots are positioned in
