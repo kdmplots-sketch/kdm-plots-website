@@ -119,7 +119,7 @@ export function BookVisitModal({ isOpen, onClose, projectName = null }: { isOpen
         backdropFilter: "blur(6px)",
         WebkitBackdropFilter: "blur(6px)",
         padding: isMobile ? "0" : "20px",
-        animation: `kdmFadeUp 0.28s ${T.easeSmooth}`,
+        animation: `kdmFadeIn 0.3s ${T.easeSmooth}`,
       }}
     >
       <div
@@ -133,6 +133,7 @@ export function BookVisitModal({ isOpen, onClose, projectName = null }: { isOpen
           boxShadow: "0 30px 80px rgba(7,19,31,0.35)",
           padding: isMobile ? "28px 22px 24px" : "36px 36px 32px",
           boxSizing: "border-box",
+          animation: `kdmFadeUp 0.32s ${T.easeSmooth}`,
         }}
       >
         {/* Header */}

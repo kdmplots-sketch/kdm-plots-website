@@ -75,7 +75,7 @@ export function ProjectGalleryModal({ project, onClose }: { project: Project | n
         backdropFilter: "blur(10px)",
         WebkitBackdropFilter: "blur(10px)",
         padding: isMobile ? "0" : "32px",
-        animation: `kdmFadeUp 0.28s ${T.easeSmooth}`,
+        animation: `kdmFadeIn 0.3s ${T.easeSmooth}`,
       }}
     >
       <div

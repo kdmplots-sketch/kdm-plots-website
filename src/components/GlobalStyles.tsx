@@ -21,6 +21,13 @@ export function GlobalStyles() {
         from { opacity: 0; transform: translateY(22px); }
         to   { opacity: 1; transform: translateY(0); }
       }
+      /* Opacity-only — safe to pair with backdrop-filter. Combining
+         backdrop-filter with a transform-based animation on the same
+         element renders solid black on a lot of mobile GPUs. */
+      @keyframes kdmFadeIn {
+        from { opacity: 0; }
+        to   { opacity: 1; }
+      }
       @keyframes kdmHeroDrift {
         0%   { transform: scale(1.06) translate3d(0, 0, 0); }
         50%  { transform: scale(1.11) translate3d(-0.8%, -0.6%, 0); }
