@@ -21,7 +21,7 @@ export function TestimonialCard({ t, width }: { t: Testimonial; width: number })
           ? "0 24px 64px rgba(8,14,28,0.14), 0 6px 20px rgba(8,14,28,0.08)"
           : "0 4px 28px rgba(8,14,28,0.07), 0 1px 6px rgba(8,14,28,0.04)",
         transform: hov ? "translateY(-8px)" : "translateY(0)",
-        transition: "transform 0.35s cubic-bezier(0.22,1,0.36,1), box-shadow 0.35s ease",
+        transition: `transform 0.35s ${T.easeSmooth}, box-shadow 0.35s ${T.easeSmooth}`,
         cursor: "default",
         flexShrink: 0,
         border: `1px solid rgba(193,153,46,${hov ? 0.22 : 0.10})`,
@@ -68,7 +68,7 @@ export function TestimonialCard({ t, width }: { t: Testimonial; width: number })
           background: t.photo ? "transparent" : t.avatarBg,
           display: "flex", alignItems: "center", justifyContent: "center",
           transform: hov ? "scale(1.06)" : "scale(1)",
-          transition: "transform 0.35s ease",
+          transition: `transform 0.35s ${T.easeSnap}`,
           boxShadow: hov ? "0 0 0 3px rgba(193,153,46,0.18)" : "none",
         }}>
           {t.photo ? (
@@ -144,7 +144,7 @@ export function StatCounter({ value, suffix, label, visible, delay = 0 }: {
       display: "flex", flexDirection: "column", alignItems: "center", gap: "6px",
       opacity: visible ? 1 : 0,
       transform: visible ? "translateY(0)" : "translateY(20px)",
-      transition: `opacity 0.6s ease ${delay + 100}ms, transform 0.6s ease ${delay + 100}ms`,
+      transition: `opacity 0.6s ${T.easeSmooth} ${delay + 100}ms, transform 0.6s ${T.easeSmooth} ${delay + 100}ms`,
     }}>
       <div style={{ display: "flex", alignItems: "baseline", gap: "2px" }}>
         <span style={{ fontFamily: T.serif, fontWeight: 700, fontSize: "40px", color: T.white, lineHeight: 1 }}>{count}</span>

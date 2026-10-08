@@ -1,14 +1,15 @@
 import { T, useVP } from "@/lib/theme";
-import { PhotoPlaceholder } from "@/components/PhotoPlaceholder";
 import { StatsBentoGrid } from "@/components/StatsBentoGrid";
 import { CornerBotanical } from "@/components/CornerBotanical";
 import { IcoCalendar, IcoFamily, IcoLayout, IcoCheck, IcoRoad, IcoLeaf } from "@/components/icons/AboutIcons";
+import { useInView } from "@/lib/useInView";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // About Section
 // ─────────────────────────────────────────────────────────────────────────────
 export function AboutSection() {
   const { isMobile, isTablet } = useVP();
+  const [ref, visible] = useInView(0.15);
   const stats = [
     { icon: <IcoCalendar />, number: "15+",   label: "Years of Trust"       },
     { icon: <IcoFamily  />, number: "2500+", label: "Families"              },
@@ -22,6 +23,7 @@ export function AboutSection() {
 
       {/* ── Main two-column editorial area ── */}
       <div
+        ref={ref}
         style={{
           maxWidth: "1440px", margin: "0 auto",
           padding: isMobile ? "72px 20px 80px" : isTablet ? "96px 40px 100px" : "140px 80px",
@@ -29,6 +31,9 @@ export function AboutSection() {
           flexDirection: isMobile ? "column" : "row",
           alignItems: isMobile ? "stretch" : "center",
           gap: isMobile ? "40px" : "60px",
+          opacity: visible ? 1 : 0,
+          transform: visible ? "translateY(0)" : "translateY(28px)",
+          transition: `opacity 0.7s ${T.easeSmooth}, transform 0.7s ${T.easeSmooth}`,
         }}
       >
         {/* ─── Left column (38%) ─── */}
@@ -157,17 +162,26 @@ export function AboutSection() {
               zIndex: 0,
             }}
           />
-          <PhotoPlaceholder
-            patternId="grid-about"
-            fill={false}
+          <div
             style={{
               position: "relative", zIndex: 1,
               width: "100%",
               aspectRatio: "4/3",
               borderRadius: "28px",
               boxShadow: "0 24px 72px rgba(8,14,28,0.18), 0 4px 16px rgba(8,14,28,0.08)",
+              background: T.white,
+              overflow: "hidden",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              padding: "14%",
+              boxSizing: "border-box",
             }}
-          />
+          >
+            <img
+              src="https://res.cloudinary.com/ubmmoo5e/image/upload/v1791445920/images.jpg"
+              alt="KDM Plots gated community layout"
+              style={{ display: "block", width: "100%", height: "100%", objectFit: "contain" }}
+            />
+          </div>
           {/* Small floating badge */}
           <div
             style={{

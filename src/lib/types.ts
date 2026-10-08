@@ -27,6 +27,23 @@ export interface Project {
   //        ]
   //   If no images are set, a "Photos Coming Soon" placeholder is shown automatically.
   images?: string[];
+
+  // ── EDITABLE: approved-copy documents (DTCP approval, RERA certificate, etc.) ──
+  // HOW TO ADD AN APPROVED COPY (from a multi-page PDF):
+  //   1. Upload the PDF to Cloudinary as-is (Media Library → Upload — PDFs are accepted directly).
+  //   2. Cloudinary gives you a page-1 image delivery URL. To get page N, insert "pg_N/"
+  //      right before the filename in that same URL, e.g.:
+  //        .../image/upload/pg_1/dtcp-approval.jpg
+  //        .../image/upload/pg_2/dtcp-approval.jpg
+  //   3. List those page URLs, in order, under "pages" below. One entry in this array
+  //      = one document (which may span several pages); add more entries for more documents
+  //      (e.g. a separate RERA certificate) for the same project.
+  approvedCopies?: ApprovedDocument[];
+}
+
+export interface ApprovedDocument {
+  title: string;    // shown as the document's name in the gallery, e.g. "DTCP Approved Layout"
+  pages: string[];  // page image URLs, in reading order
 }
 
 // Tabs shown to visitors — keep this to the statuses you want as filter chips

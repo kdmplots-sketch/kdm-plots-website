@@ -84,108 +84,75 @@ export function TestimonialsSection() {
   const [carouRef, carouVisible] = useInView(0.10);
 
   // ── Carousel state ──
+  // Native scroll-snap carousel: the browser owns positioning/alignment, so
+  // there's no manual transform math to get wrong on odd viewport widths.
   const n = TESTIMONIALS.length;
-  const cloned: Testimonial[] = [...TESTIMONIALS, ...TESTIMONIALS, ...TESTIMONIALS];
   const CARD_GAP = 18;
 
-  // On mobile, the card fills the measured viewport width exactly (no fixed
+  const scrollerRef = React.useRef<HTMLDivElement>(null);
+  const [active, setActive] = React.useState(0);
+  const [paused, setPaused] = React.useState(false);
+  const autoRef = React.useRef<ReturnType<typeof setInterval> | null>(null);
+  const scrollingToRef = React.useRef<number | null>(null);
+
+  // On mobile, the card fills the measured scroller width exactly (no fixed
   // px guess) so it's always centered and never overflows under the arrows.
-  const viewportRef = React.useRef<HTMLDivElement>(null);
   const [viewportW, setViewportW] = React.useState(0);
   React.useLayoutEffect(() => {
     function measure() {
-      if (!viewportRef.current) return;
-      setViewportW(viewportRef.current.clientWidth);
+      if (!scrollerRef.current) return;
+      setViewportW(scrollerRef.current.clientWidth);
     }
     measure();
     const ro = new ResizeObserver(measure);
-    if (viewportRef.current) ro.observe(viewportRef.current);
+    if (scrollerRef.current) ro.observe(scrollerRef.current);
     return () => ro.disconnect();
   }, []);
 
-  const CARD_W = isMobile ? (viewportW || 300) : 288;
-  const STEP = CARD_W + CARD_GAP;
-
-  const trackRef    = React.useRef<HTMLDivElement>(null);
-  const [pos, setPos]         = React.useState(n);   // index in cloned array
-  const [sliding, setSliding] = React.useState(false);
-  const [paused, setPaused]   = React.useState(false);
-  const [dragStart, setDragStart]   = React.useState(0);
-  const [dragDelta, setDragDelta]   = React.useState(0);
-  const [dragging, setDragging]     = React.useState(false);
-  const autoRef = React.useRef<ReturnType<typeof setInterval> | null>(null);
-
-  function goTo(nextPos: number, animate = true) {
-    if (sliding && animate) return;
-    if (animate) setSliding(true);
-    setPos(nextPos);
+  function cardStep() {
+    const scroller = scrollerRef.current;
+    if (!scroller) return 0;
+    const first = scroller.children[0] as HTMLElement | undefined;
+    return first ? first.getBoundingClientRect().width + CARD_GAP : 0;
   }
 
-  function handleTrackEnd(e: React.TransitionEvent<HTMLDivElement>) {
-    if (e.target !== trackRef.current || e.propertyName !== "transform") return;
-    setPos(prev => {
-      let next = prev;
-      if (prev < n)      next = prev + n;
-      else if (prev >= n * 2) next = prev - n;
-      if (next !== prev && trackRef.current) {
-        trackRef.current.style.transition = "none";
-        requestAnimationFrame(() => requestAnimationFrame(() => {
-          if (trackRef.current) trackRef.current.style.transition = "";
-        }));
-      }
-      return next;
-    });
-    setSliding(false);
+  function goTo(index: number) {
+    const scroller = scrollerRef.current;
+    if (!scroller) return;
+    const clamped = ((index % n) + n) % n;
+    scrollingToRef.current = clamped;
+    scroller.scrollTo({ left: clamped * cardStep(), behavior: "smooth" });
+    setActive(clamped);
   }
 
   // Auto-play
   React.useEffect(() => {
     if (paused) { if (autoRef.current) clearInterval(autoRef.current); return; }
-    autoRef.current = setInterval(() => goTo(pos + 1), 6000);
+    autoRef.current = setInterval(() => goTo(active + 1), 6000);
     return () => { if (autoRef.current) clearInterval(autoRef.current); };
-  }, [paused, pos]);
+  }, [paused, active]);
 
-  // Pointer drag
-  function onDown(e: React.PointerEvent) {
-    setDragging(true);
-    setDragStart(e.clientX);
-    setDragDelta(0);
-    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
-  }
-  function onMove(e: React.PointerEvent) {
-    if (!dragging) return;
-    setDragDelta(e.clientX - dragStart);
-  }
-  function onUp() {
-    if (!dragging) return;
-    setDragging(false);
-    if (dragDelta < -40) goTo(pos + 1);
-    else if (dragDelta > 40) goTo(pos - 1);
-    setDragDelta(0);
+  // Keep the active dot in sync when the user swipes/scrolls manually.
+  function onScroll() {
+    const scroller = scrollerRef.current;
+    if (!scroller) return;
+    const step = cardStep();
+    if (!step) return;
+    const index = Math.round(scroller.scrollLeft / step);
+    if (index !== scrollingToRef.current) scrollingToRef.current = null;
+    setActive(((index % n) + n) % n);
   }
 
-  // Safety net: if a pointerup/pointercancel is ever missed (common with
-  // touch emulation), this guarantees the card doesn't stay stuck mid-drag.
+  // Re-snap to the active card if the viewport is resized (card width changes).
   React.useEffect(() => {
-    if (!dragging) return;
-    window.addEventListener("pointerup", onUp);
-    window.addEventListener("pointercancel", onUp);
-    return () => {
-      window.removeEventListener("pointerup", onUp);
-      window.removeEventListener("pointercancel", onUp);
-    };
-  }, [dragging, dragDelta, pos]);
-
-  // Wheel
-  function onWheel(e: React.WheelEvent) {
-    if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
-      e.preventDefault();
-      if (e.deltaX > 30) goTo(pos + 1);
-      else if (e.deltaX < -30) goTo(pos - 1);
+    function onResize() {
+      const scroller = scrollerRef.current;
+      if (!scroller) return;
+      scroller.scrollTo({ left: active * cardStep(), behavior: "auto" });
     }
-  }
-
-  const translateX = -(pos * STEP) + dragDelta;
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, [active]);
 
   return (
     <section style={{ background: T.ivory, width: "100%", overflow: "hidden" }}>
@@ -199,7 +166,7 @@ export function TestimonialsSection() {
           position: "relative",
           opacity: heroVisible ? 1 : 0,
           transform: heroVisible ? "translateY(0)" : "translateY(28px)",
-          transition: "opacity 0.7s ease, transform 0.7s ease",
+          transition: `opacity 0.7s ${T.easeSmooth}, transform 0.7s ${T.easeSmooth}`,
         }}
       >
         {/* LEFT — header */}
@@ -261,18 +228,24 @@ export function TestimonialsSection() {
           padding: "0 0 72px",
           opacity: carouVisible ? 1 : 0,
           transform: carouVisible ? "translateY(0)" : "translateY(28px)",
-          transition: "opacity 0.7s ease 0.15s, transform 0.7s ease 0.15s",
+          transition: `opacity 0.7s ${T.easeSmooth} 0.15s, transform 0.7s ${T.easeSmooth} 0.15s`,
         }}
         onMouseEnter={() => setPaused(true)}
         onMouseLeave={() => setPaused(false)}
       >
         <div style={{ maxWidth: "1440px", margin: "0 auto", padding: isMobile ? "0 20px" : isTablet ? "0 40px" : "0 80px", position: "relative" }}>
 
+          {/* Hide the native scrollbar on the snap track, keep native touch/trackpad scroll */}
+          <style>{`
+            .kdm-testimonial-track { scrollbar-width: none; -ms-overflow-style: none; }
+            .kdm-testimonial-track::-webkit-scrollbar { display: none; }
+          `}</style>
+
           {/* Left/Right arrows — overlap the cards on narrow screens, so they
               only float outside on tablet/desktop; mobile relies on swipe + dots */}
           {!isMobile && (
           <button
-            onClick={() => goTo(pos - 1)}
+            onClick={() => goTo(active - 1)}
             aria-label="Previous testimonial"
             style={{
               position: "absolute", left: "24px", top: "50%", transform: "translateY(-50%)",
@@ -294,7 +267,7 @@ export function TestimonialsSection() {
 
           {!isMobile && (
           <button
-            onClick={() => goTo(pos + 1)}
+            onClick={() => goTo(active + 1)}
             aria-label="Next testimonial"
             style={{
               position: "absolute", right: "24px", top: "50%", transform: "translateY(-50%)",
@@ -314,53 +287,47 @@ export function TestimonialsSection() {
           </button>
           )}
 
-          {/* Track viewport — measured so the mobile card width always matches exactly */}
+          {/* Scroll-snap track — native scroll handles touch/trackpad drag and
+              keeps each card perfectly aligned at every viewport width */}
           <div
-            ref={viewportRef}
-            style={{ overflow: "hidden", padding: isMobile ? "16px 0 24px" : "16px 4px 24px", touchAction: "pan-y" }}
-            onPointerDown={onDown}
-            onPointerMove={onMove}
-            onPointerUp={onUp}
-            onPointerCancel={onUp}
-            onWheel={onWheel}
+            ref={scrollerRef}
+            className="kdm-testimonial-track"
+            onScroll={onScroll}
+            style={{
+              display: "flex",
+              gap: `${CARD_GAP}px`,
+              overflowX: "auto",
+              scrollSnapType: "x mandatory",
+              padding: isMobile ? "16px 0 24px" : "16px 4px 24px",
+              WebkitOverflowScrolling: "touch",
+            }}
           >
-            <div
-              ref={trackRef}
-              onTransitionEnd={handleTrackEnd}
-              style={{
-                display: "flex",
-                gap: `${CARD_GAP}px`,
-                transform: `translateX(${translateX}px)`,
-                transition: (sliding && !dragging) ? "transform 0.55s cubic-bezier(0.25,1,0.5,1)" : "none",
-                willChange: "transform",
-                userSelect: "none",
-                cursor: dragging ? "grabbing" : "grab",
-              }}
-            >
-              {cloned.map((t, i) => (
-                <TestimonialCard key={i} t={t} width={CARD_W} />
-              ))}
-            </div>
+            {TESTIMONIALS.map((t, i) => {
+              const cardW = isMobile ? (viewportW || 300) : 288;
+              return (
+                <div key={t.id} style={{ flexShrink: 0, width: `${cardW}px`, scrollSnapAlign: isMobile ? "center" : "start", scrollSnapStop: "always" }}>
+                  <TestimonialCard t={t} width={cardW} />
+                </div>
+              );
+            })}
           </div>
 
           {/* Dot indicators */}
           <div style={{ display: "flex", justifyContent: "center", gap: "7px", marginTop: "8px" }}>
-            {TESTIMONIALS.map((_, i) => {
-              const active = ((pos % n) + n) % n === i;
-              return (
-                <button
-                  key={i}
-                  onClick={() => goTo(n + i)}
-                  style={{
-                    width: active ? "24px" : "7px", height: "7px",
-                    borderRadius: "9999px",
-                    background: active ? T.gold : "rgba(193,153,46,0.30)",
-                    border: "none", padding: 0, cursor: "pointer",
-                    transition: "all 0.3s ease",
-                  }}
-                />
-              );
-            })}
+            {TESTIMONIALS.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => goTo(i)}
+                aria-label={`Go to testimonial ${i + 1}`}
+                style={{
+                  width: active === i ? "24px" : "7px", height: "7px",
+                  borderRadius: "9999px",
+                  background: active === i ? T.gold : "rgba(193,153,46,0.30)",
+                  border: "none", padding: 0, cursor: "pointer",
+                  transition: `all 0.3s ${T.easeSnap}`,
+                }}
+              />
+            ))}
           </div>
         </div>
       </div>

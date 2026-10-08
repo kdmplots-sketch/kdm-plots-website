@@ -61,7 +61,7 @@ export function FaqSection() {
           display: "flex", flexDirection: isMobile ? "column" : "row", gap: isMobile ? "40px" : "80px", alignItems: "flex-start",
           opacity: visible ? 1 : 0,
           transform: visible ? "translateY(0)" : "translateY(28px)",
-          transition: "opacity 0.7s ease, transform 0.7s ease",
+          transition: `opacity 0.7s ${T.easeSmooth}, transform 0.7s ${T.easeSmooth}`,
         }}
       >
         {/* LEFT — heading */}

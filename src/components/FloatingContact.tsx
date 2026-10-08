@@ -93,7 +93,7 @@ export function FloatingContact() {
       opacity: visible ? 1 : 0,
       transform: visible ? "translateY(0)" : "translateY(16px)",
       pointerEvents: visible ? "auto" : "none",
-      transition: "opacity 0.35s ease, transform 0.35s ease",
+      transition: `opacity 0.4s ${T.easeSmooth}, transform 0.4s ${T.easeSmooth}`,
     }}>
       <FloatingActionBtn
         href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`}

@@ -46,7 +46,7 @@ export default function App() {
 
   return (
     <ViewportCtx.Provider value={vpCtxValue}>
-    <BookingModalProvider render={(isOpen, close) => <BookVisitModal isOpen={isOpen} onClose={close} />}>
+    <BookingModalProvider render={(isOpen, close, projectName) => <BookVisitModal isOpen={isOpen} onClose={close} projectName={projectName} />}>
     <ProjectGalleryProvider render={(project, close) => <ProjectGalleryModal project={project} onClose={close} />}>
     <GlobalStyles />
     {/* Navbar — fixed to the viewport, stays visible through the whole page scroll */}
@@ -183,7 +183,7 @@ export default function App() {
       <div id="amenities"><InfrastructureSection /></div>
 
       {/* ── Investment Advantages Section ── */}
-      <InvestmentSection />
+      <div id="investment"><InvestmentSection /></div>
 
       {/* ── Client Testimonials Section ── */}
       <TestimonialsSection />

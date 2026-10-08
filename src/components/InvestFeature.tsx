@@ -17,7 +17,7 @@ export function InvestFeature({ icon, title, desc }: { icon: React.ReactNode; ti
         border: `1.5px solid rgba(193,153,46,${hov ? 0.8 : 0.45})`,
         background: hov ? T.goldFaint : "transparent",
         display: "flex", alignItems: "center", justifyContent: "center",
-        transition: "all 0.25s ease",
+        transition: `all 0.3s ${T.easeSnap}`,
         transform: hov ? "scale(1.08)" : "scale(1)",
       }}>
         {icon}
@@ -33,33 +33,46 @@ export function InvestFeature({ icon, title, desc }: { icon: React.ReactNode; ti
 // ─────────────────────────────────────────────────────────────────────────────
 // Investment Section — Timeline Milestone
 // ─────────────────────────────────────────────────────────────────────────────
+const TIMELINE_EASE = "cubic-bezier(0.22,1,0.36,1)";
+
 export function TimelineMilestone({
   icon, label, title, desc, delay, visible,
 }: { icon: React.ReactNode; label: string; title: string; desc: string; delay: number; visible: boolean }) {
   const { isMobile } = useVP();
+  const [hov, setHov] = React.useState(false);
   return (
-    <div style={{
-      flex: 1, display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center",
-      opacity: visible ? 1 : 0,
-      transform: visible ? "translateY(0)" : "translateY(24px)",
-      transition: `opacity 0.6s ease ${delay}ms, transform 0.6s ease ${delay}ms`,
-    }}>
+    <div
+      onMouseEnter={() => setHov(true)}
+      onMouseLeave={() => setHov(false)}
+      style={{
+        position: "relative",
+        flex: isMobile ? "none" : 1,
+        width: "100%",
+        display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center",
+        opacity: visible ? 1 : 0,
+        transform: visible ? "translateY(0)" : "translateY(24px)",
+        transition: `opacity 0.7s ${TIMELINE_EASE} ${delay}ms, transform 0.7s ${TIMELINE_EASE} ${delay}ms`,
+      }}
+    >
       {/* Icon bubble */}
       <div style={{
+        position: "relative", zIndex: 1,
         width: "52px", height: "52px", borderRadius: "50%",
-        border: `1.5px solid rgba(193,153,46,0.55)`,
-        background: "rgba(193,153,46,0.10)",
+        border: `1.5px solid rgba(193,153,46,${hov ? 0.85 : 0.55})`,
+        background: hov ? "rgba(193,153,46,0.18)" : "rgba(193,153,46,0.10)",
         display: "flex", alignItems: "center", justifyContent: "center",
         marginBottom: "14px", flexShrink: 0,
-        boxShadow: "0 2px 12px rgba(193,153,46,0.15)",
+        boxShadow: hov ? "0 4px 20px rgba(193,153,46,0.32)" : "0 2px 12px rgba(193,153,46,0.15)",
+        transform: hov ? "scale(1.08)" : "scale(1)",
+        transition: `all 0.35s ${TIMELINE_EASE}`,
       }}>
         {icon}
       </div>
       <span style={{ fontFamily: T.sans, fontWeight: 800, fontSize: "9px", letterSpacing: "0.22em", textTransform: "uppercase", color: T.gold, marginBottom: "6px", display: "block" }}>{label}</span>
-      <p style={{ fontFamily: T.serif, fontWeight: 700, fontSize: "15px", color: T.navy, margin: 0, marginBottom: "6px", lineHeight: 1.25 }}>{title}</p>
+      <p style={{ fontFamily: T.serif, fontWeight: 700, fontSize: "15px", color: T.white, margin: 0, marginBottom: "6px", lineHeight: 1.25 }}>{title}</p>
       {/* On mobile each milestone has the full width to itself, so the text
           isn't squeezed into the narrow column the desktop row layout needs */}
-      <p style={{ fontFamily: T.sans, fontWeight: 400, fontSize: "11px", color: "#5B6B82", margin: 0, lineHeight: 1.6, maxWidth: isMobile ? "260px" : "120px" }}>{desc}</p>
+      <p style={{ fontFamily: T.sans, fontWeight: 400, fontSize: "11px", color: "rgba(255,255,255,0.56)", margin: 0, lineHeight: 1.6, maxWidth: isMobile ? "260px" : "120px" }}>{desc}</p>
     </div>
   );
 }

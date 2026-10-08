@@ -38,7 +38,7 @@ export function FaqItem({ q, a, open, onToggle }: { q: string; a: string; open: 
           border: `1.5px solid rgba(193,153,46,${open ? 0.7 : hov ? 0.55 : 0.35})`,
           background: open ? T.gold : "transparent",
           display: "flex", alignItems: "center", justifyContent: "center",
-          transition: "all 0.25s ease",
+          transition: `all 0.35s ${T.easeSnap}`,
           transform: open ? "rotate(45deg)" : "rotate(0deg)",
           boxShadow: open ? "0 4px 14px rgba(193,153,46,0.28)" : "none",
         }}>
@@ -48,16 +48,20 @@ export function FaqItem({ q, a, open, onToggle }: { q: string; a: string; open: 
         </div>
       </button>
 
-      {/* Answer — height animated via maxHeight */}
+      {/* Answer — height and opacity animate together so it reads as a
+          reveal rather than a hard snap into view */}
       <div style={{
         maxHeight: open ? "200px" : "0",
         overflow: "hidden",
-        transition: "max-height 0.38s cubic-bezier(0.25,1,0.5,1)",
+        transition: `max-height 0.42s ${T.easeSmooth}`,
       }}>
         <p style={{
           fontFamily: T.sans, fontWeight: 400, fontSize: "13px",
           lineHeight: 1.75, color: "#5B6B82",
           margin: 0, padding: "0 20px 18px",
+          opacity: open ? 1 : 0,
+          transform: open ? "translateY(0)" : "translateY(-6px)",
+          transition: `opacity 0.3s ${T.easeSmooth} ${open ? "0.08s" : "0s"}, transform 0.3s ${T.easeSmooth} ${open ? "0.08s" : "0s"}`,
         }}>{a}</p>
       </div>
     </div>

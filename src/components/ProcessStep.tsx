@@ -20,7 +20,7 @@ export function ProcessStep({
         gap: isMobile ? "16px" : "0",
         opacity: visible ? 1 : 0,
         transform: visible ? "translateY(0)" : "translateY(24px)",
-        transition: `opacity 0.6s ease ${delay}ms, transform 0.6s ease ${delay}ms`,
+        transition: `opacity 0.6s ${T.easeSmooth} ${delay}ms, transform 0.6s ${T.easeSmooth} ${delay}ms`,
       }}
     >
       {/* Step number */}
@@ -41,7 +41,7 @@ export function ProcessStep({
         background: hov ? "rgba(193,153,46,0.12)" : T.goldFaint,
         display: "flex", alignItems: "center", justifyContent: "center",
         marginBottom: isMobile ? "0" : "18px", marginTop: isMobile ? "0" : "20px", flexShrink: 0,
-        transition: "all 0.28s ease",
+        transition: `all 0.3s ${T.easeSnap}`,
         transform: hov ? "scale(1.08)" : "scale(1)",
         boxShadow: hov ? "0 6px 24px rgba(193,153,46,0.22)" : "none",
         position: "relative", zIndex: 1,

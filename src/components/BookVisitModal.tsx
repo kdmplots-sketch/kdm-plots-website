@@ -43,10 +43,10 @@ const inputStyle: React.CSSProperties = {
   border: "1.5px solid rgba(16,42,66,0.14)",
   background: "#FFFFFF",
   outline: "none",
-  transition: "border-color 0.2s ease",
+  transition: `border-color 0.3s ${T.easeSnap}`,
 };
 
-export function BookVisitModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+export function BookVisitModal({ isOpen, onClose, projectName = null }: { isOpen: boolean; onClose: () => void; projectName?: string | null }) {
   const { isMobile } = useVP();
   const [name, setName] = React.useState("");
   const [mobile, setMobile] = React.useState("");
@@ -93,6 +93,7 @@ export function BookVisitModal({ isOpen, onClose }: { isOpen: boolean; onClose: 
 
     const message =
       `Hi KDM Plots, I'd like to schedule a site visit.\n\n` +
+      (projectName ? `Project of Interest: ${projectName}\n` : "") +
       `Name: ${name.trim()}\n` +
       `Mobile: ${mobile.trim()}\n` +
       `Preferred Date: ${formatDateLong(date)}\n` +
@@ -118,7 +119,7 @@ export function BookVisitModal({ isOpen, onClose }: { isOpen: boolean; onClose: 
         backdropFilter: "blur(6px)",
         WebkitBackdropFilter: "blur(6px)",
         padding: isMobile ? "0" : "20px",
-        animation: "kdmFadeUp 0.22s ease",
+        animation: `kdmFadeUp 0.28s ${T.easeSmooth}`,
       }}
     >
       <div
@@ -161,9 +162,23 @@ export function BookVisitModal({ isOpen, onClose }: { isOpen: boolean; onClose: 
           </button>
         </div>
 
-        <p style={{ margin: "0 0 26px", fontFamily: T.sans, fontSize: "13.5px", lineHeight: 1.6, color: T.gray }}>
+        <p style={{ margin: "0 0 18px", fontFamily: T.sans, fontSize: "13.5px", lineHeight: 1.6, color: T.gray }}>
           Share your preferred date and time — we'll confirm your appointment over WhatsApp.
         </p>
+
+        {projectName && (
+          <div style={{
+            display: "inline-flex", alignItems: "center", gap: "8px",
+            marginBottom: "22px", padding: "8px 14px",
+            background: T.goldFaint, border: `1px solid rgba(193,153,46,0.30)`,
+            borderRadius: T.radiusFull,
+          }}>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={T.gold} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+            </svg>
+            <span style={{ fontFamily: T.sans, fontWeight: 600, fontSize: "12px", color: T.navy }}>{projectName}</span>
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
           <Field label="Your Name">

@@ -1,4 +1,4 @@
-import kdmLogo from "@/imports/KDM Logo Transparant.png";
+import kdmLogo from "@/imports/KDM_Logo_Transparant-50kb-removebg-preview.png";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // KDM Logo

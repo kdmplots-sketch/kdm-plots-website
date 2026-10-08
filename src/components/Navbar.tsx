@@ -52,7 +52,7 @@ export const NAV_LINKS = [
   { label: "Projects",   href: "#projects" },
   { label: "Amenities",  href: "#amenities" },
   { label: "Why KDM",    href: "#why-kdm" },
-  { label: "Gallery",    href: "#" },
+  { label: "Gallery",    href: "#projects" },
   { label: "Contact",    href: "#contact" },
 ];
 

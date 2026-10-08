@@ -40,4 +40,9 @@ export const T = {
   radiusSm:    "6px",
   radiusBtn:   "5px",
   radiusFull:  "9999px",
+  // Two signature motion curves, used everywhere instead of the flat default
+  // "ease" — snap for quick interactive feedback (hover/press/toggle),
+  // smooth for slower reveals (scroll-ins, fades, panel transitions).
+  easeSnap:    "cubic-bezier(0.32,0.72,0,1)",
+  easeSmooth:  "cubic-bezier(0.22,1,0.36,1)",
 };

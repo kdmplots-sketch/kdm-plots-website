@@ -22,7 +22,7 @@ export function CarouselArrow({ direction, onClick, disabled = false }: {
         background: isRight ? (hov ? "#9C7A24" : T.gold) : (hov ? T.goldFaint : "transparent"),
         display: "flex", alignItems: "center", justifyContent: "center",
         cursor: disabled ? "not-allowed" : "pointer",
-        transition: "all 0.22s ease",
+        transition: `all 0.3s ${T.easeSnap}`,
         boxShadow: isRight && !disabled ? "0 4px 14px rgba(193,153,46,0.32)" : "none",
         opacity: disabled ? 0.38 : 1,
         flexShrink: 0,

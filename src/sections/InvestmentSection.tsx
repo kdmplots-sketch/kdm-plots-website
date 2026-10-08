@@ -39,7 +39,7 @@ export function InvestmentSection() {
           display: "flex", flexDirection: isMobile ? "column" : "row", alignItems: "stretch", minHeight: isMobile ? "auto" : "580px",
           opacity: heroVisible ? 1 : 0,
           transform: heroVisible ? "translateY(0)" : "translateY(32px)",
-          transition: "opacity 0.7s ease, transform 0.7s ease",
+          transition: `opacity 0.7s ${T.easeSmooth}, transform 0.7s ${T.easeSmooth}`,
         }}
       >
         {/* LEFT — editorial text */}
@@ -240,7 +240,7 @@ export function InvestmentSection() {
           borderTop: "1px solid rgba(193,153,46,0.10)",
           opacity: stripVisible ? 1 : 0,
           transform: stripVisible ? "translateY(0)" : "translateY(20px)",
-          transition: "opacity 0.65s ease 0.1s, transform 0.65s ease 0.1s",
+          transition: `opacity 0.65s ${T.easeSmooth} 0.1s, transform 0.65s ${T.easeSmooth} 0.1s`,
         }}
       >
         {/* Strip label */}

@@ -9,15 +9,134 @@ import { useInView } from "@/lib/useInView";
 // Featured Projects — rebuilt section
 // ─────────────────────────────────────────────────────────────────────────────
 const ALL_PROJECTS: Project[] = [
-  { id: 1, status: "Ongoing", title: "Akil Garden",            location: "Madurai, Tamil Nadu", dtcp: true, rera: true, prime: true, infra: true },
-  { id: 2, status: "Ongoing", title: "Raja Rajeshwari Nagar",  location: "Madurai, Tamil Nadu", dtcp: true, rera: true, prime: true, infra: true },
-  { id: 3, status: "Ongoing", title: "Lucky City",             location: "Madurai, Tamil Nadu", dtcp: true, rera: true, prime: true, infra: true },
-  { id: 4, status: "Ongoing", title: "Ayyapatti Highway City", location: "Madurai, Tamil Nadu", dtcp: true, rera: true, prime: true, infra: true },
-  { id: 5, status: "Ongoing", title: "Green View City",        location: "Madurai, Tamil Nadu", dtcp: true, rera: true, prime: true, infra: true },
-  { id: 6, status: "Ongoing", title: "Thanga Boomi",           location: "Madurai, Tamil Nadu", dtcp: true, rera: true, prime: true, infra: true },
-  { id: 7, status: "Ongoing", title: "Golden Park",            location: "Madurai, Tamil Nadu", dtcp: true, rera: true, prime: true, infra: true },
-  { id: 8, status: "Ongoing", title: "Royal Garden",           location: "Madurai, Tamil Nadu", dtcp: true, rera: true, prime: true, infra: true },
-  { id: 9, status: "Ongoing", title: "RK Nagar",               location: "Madurai, Tamil Nadu", dtcp: true, rera: true, prime: true, infra: true },
+  { id: 2, status: "Ongoing", title: "Raja Rajeshwari Nagar",  location: "Madurai, Tamil Nadu", dtcp: true, rera: true, prime: true, infra: true,
+    images: [
+      "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791385930/IMG-20261006-WA0032-100kb.jpg",
+      "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791385929/IMG-20261006-WA0030-100kb.jpg",
+      "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791385928/IMG-20261006-WA0031-100kb.jpg",
+      "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791385924/IMG-20261006-WA0029-100kb.jpg",
+      "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791385924/IMG-20261006-WA0028-100kb.jpg",
+      "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791385924/IMG-20261006-WA0027-100kb.jpg",
+      "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791385920/IMG-20261006-WA0026-100kb.jpg",
+      "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791385918/IMG-20261006-WA0023-100kb.jpg",
+      "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791385918/IMG-20261006-WA0022-100kb.jpg",
+      "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791385916/IMG-20261006-WA0024-100kb.jpg",
+      "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791385914/IMG-20261006-WA0020-100kb.jpg",
+      "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791385912/IMG-20261006-WA0021-100kb.jpg",
+    ] },
+  { id: 3, status: "Ongoing", title: "Lucky City",             location: "Madurai, Tamil Nadu", dtcp: true, rera: true, prime: true, infra: true,
+    images: [
+      "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791385995/IMG-20261006-WA0040-100kb.jpg",
+      "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791385995/IMG-20261006-WA0041-100kb.jpg",
+      "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791385991/IMG-20261006-WA0039-100kb.jpg",
+      "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791385991/IMG-20261006-WA0042-100kb.jpg",
+      "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791385990/IMG-20261006-WA0038-100kb.jpg",
+    ] },
+  { id: 4, status: "Ongoing", title: "Ayyapatti Highway City", location: "Madurai, Tamil Nadu", dtcp: true, rera: true, prime: true, infra: true,
+    images: [
+      "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791386077/IMG-20261006-WA0074-100kb.jpg",
+      "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791386076/IMG-20261006-WA0073-100kb.jpg",
+      "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791386075/IMG-20261006-WA0072-100kb.jpg",
+      "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791386071/IMG-20261006-WA0070-100kb.jpg",
+      "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791386071/IMG-20261006-WA0067-100kb.jpg",
+      "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791386070/IMG-20261006-WA0069-100kb.jpg",
+      "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791386069/IMG-20261006-WA0068-100kb.jpg",
+      "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791386067/IMG-20261006-WA0071-100kb.jpg",
+      "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791386062/IMG-20261006-WA0064-100kb.jpg",
+      "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791386061/IMG-20261006-WA0065-100kb.jpg",
+      "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791386061/IMG-20261006-WA0066-100kb.jpg",
+      "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791386060/IMG-20261006-WA0063-100kb.jpg",
+      "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791386060/IMG-20261006-WA0062-100kb.jpg",
+      "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791386058/IMG-20261006-WA0059-100kb.jpg",
+      "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791386056/IMG-20261006-WA0061-100kb.jpg",
+      "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791386055/IMG-20261006-WA0060-100kb.jpg",
+    ] },
+  { id: 5, status: "Ongoing", title: "Green View City",        location: "Madurai, Tamil Nadu", dtcp: true, rera: true, prime: true, infra: true,
+    images: [
+      "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791386151/IMG-20261006-WA0102-100kb.jpg",
+      "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791386149/IMG-20261006-WA0101-100kb.jpg",
+      "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791386147/IMG-20261006-WA0099-100kb.jpg",
+      "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791386146/IMG-20261006-WA0100-100kb.jpg",
+      "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791386145/IMG-20261006-WA0098-100kb.jpg",
+      "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791386142/IMG-20261006-WA0097-100kb.jpg",
+      "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791386136/IMG-20261006-WA0096-100kb.jpg",
+      "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791386133/IMG-20261006-WA0095-100kb.jpg",
+      "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791386129/IMG-20261006-WA0093-100kb.jpg",
+      "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791386127/IMG-20261006-WA0092-100kb.jpg",
+      "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791386126/IMG-20261006-WA0094-100kb.jpg",
+      "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791386126/IMG-20261006-WA0090-100kb.jpg",
+      "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791386124/IMG-20261006-WA0091-100kb.jpg",
+      "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791386123/IMG-20261006-WA0089-100kb.jpg",
+    ],
+    approvedCopies: [
+      { title: "DTCP Approved Layout", pages: [
+        "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791444453/GREEN_VIEW_CITY_ALAGARKOVIL_DTCP_COPY_page-0001.jpg",
+        "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791444453/GREEN_VIEW_CITY_ALAGARKOVIL_DTCP_COPY_page-0002.jpg",
+        "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791444454/GREEN_VIEW_CITY_ALAGARKOVIL_DTCP_COPY_page-0003.jpg",
+        "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791444454/GREEN_VIEW_CITY_ALAGARKOVIL_DTCP_COPY_page-0004.jpg",
+      ] },
+      { title: "RERA Approved Copy", pages: [
+        "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791444895/GREEN_VIEW_CITY_ALAGARKOVIL_RERA_COPY_page-0001.jpg",
+      ] },
+    ] },
+  { id: 7, status: "Ongoing", title: "Golden Park",            location: "Madurai, Tamil Nadu", dtcp: true, rera: true, prime: true, infra: true,
+    images: [
+      "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791386244/IMG-20261007-WA0039-100kb.jpg",
+      "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791386242/IMG-20261007-WA0038-100kb.jpg",
+      "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791386241/IMG-20261007-WA0037-100kb.jpg",
+      "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791386240/IMG-20261007-WA0036-100kb.jpg",
+      "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791386240/IMG-20261007-WA0035-100kb.jpg",
+      "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791386235/IMG-20261007-WA0034-100kb.jpg",
+      "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791386232/IMG-20261007-WA0032-100kb.jpg",
+      "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791386230/IMG-20261007-WA0031-100kb.jpg",
+      "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791386228/IMG-20261007-WA0030-100kb.jpg",
+      "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791386227/IMG-20261007-WA0029-100kb.jpg",
+      "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791386225/IMG-20261007-WA0028-100kb.jpg",
+      "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791386224/IMG-20261007-WA0027-100kb.jpg",
+      "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791386223/IMG-20261007-WA0026-100kb.jpg",
+      "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791386222/IMG-20261007-WA0025-100kb.jpg",
+      "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791386219/IMG-20261007-WA0024-100kb.jpg",
+      "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791386217/IMG-20261007-WA0023-100kb.jpg",
+      "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791386217/IMG-20261007-WA0021-100kb.jpg",
+      "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791386216/IMG-20261007-WA0022-100kb.jpg",
+      "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791386214/IMG-20261007-WA0020-100kb.jpg",
+    ],
+    approvedCopies: [
+      { title: "DTCP Approved Layout", pages: [
+        "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791445365/GOLDEN_PARK_POOVANTHI_DTCP_COPY_page-0001.jpg",
+        "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791445367/GOLDEN_PARK_POOVANTHI_DTCP_COPY_page-0002.jpg",
+        "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791445371/GOLDEN_PARK_POOVANTHI_DTCP_COPY_page-0003.jpg",
+        "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791445373/GOLDEN_PARK_POOVANTHI_DTCP_COPY_page-0004.jpg",
+      ] },
+      { title: "RERA Approved Copy", pages: [
+        "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791445528/GOLDEN_PARK_POOVANTHI_RERA_COPY_page-0001.jpg",
+      ] },
+    ] },
+  { id: 8, status: "Ongoing", title: "Royal Garden",           location: "Madurai, Tamil Nadu", dtcp: true, rera: true, prime: true, infra: true,
+    images: [
+      "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791386426/IMG-20261007-WA0051-100kb.jpg",
+      "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791386421/IMG-20261007-WA0050-100kb.jpg",
+      "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791386419/IMG-20261007-WA0049-100kb.jpg",
+      "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791386418/IMG-20261007-WA0048-100kb.jpg",
+      "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791386287/IMG-20261007-WA0047-100kb.jpg",
+      "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791386285/IMG-20261007-WA0046-100kb.jpg",
+    ],
+    approvedCopies: [
+      { title: "DTCP Approved Layout", pages: [
+        "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791445141/ROYAL_GARDEN_NATTARMANGALAM_DTCP_page-0001.jpg",
+        "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791445142/ROYAL_GARDEN_NATTARMANGALAM_DTCP_page-0002.jpg",
+        "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791445144/ROYAL_GARDEN_NATTARMANGALAM_DTCP_page-0003.jpg",
+        "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791445147/ROYAL_GARDEN_NATTARMANGALAM_DTCP_page-0004.jpg",
+      ] },
+    ] },
+  { id: 9, status: "Ongoing", title: "RK Nagar",               location: "Madurai, Tamil Nadu", dtcp: true, rera: true, prime: true, infra: true,
+    images: [
+      "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791385821/IMG-20261007-WA0072-100kb.jpg",
+      "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791385820/IMG-20261007-WA0069-100kb.jpg",
+      "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791385819/IMG-20261007-WA0070-100kb.jpg",
+      "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791385816/IMG-20261007-WA0067-100kb.jpg",
+      "https://res.cloudinary.com/ubmmoo5e/image/upload/v1791385815/IMG-20261007-WA0071-100kb.jpg",
+    ] },
 ];
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -73,6 +192,15 @@ export function FeaturedProjectsSection() {
     if (sliding || !cardW) return;
     setSliding(true);
     setTrackPos(prev => prev + dir);
+  }
+
+  // Real (non-cloned) index of the currently leading card — drives the dot/counter UI
+  const activeIndex = n > 0 ? ((trackPos % n) + n) % n : 0;
+
+  function goToIndex(idx: number) {
+    if (sliding || !cardW || idx === activeIndex) return;
+    setSliding(true);
+    setTrackPos(n + idx);
   }
 
   // ── Auto-swipe — advances on its own, pauses on hover/touch or mid-transition ──
@@ -298,6 +426,30 @@ export function FeaturedProjectsSection() {
           )}
         </div>
         </div>
+        )}
+
+        {/* Slide counter + dot pagination — so visitors know how many projects exist and where they are */}
+        {n > 1 && (
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "14px", padding: "20px 20px 0" }}>
+            <span style={{ fontFamily: T.sans, fontWeight: 600, fontSize: "11px", letterSpacing: "0.08em", color: "#5B6B82", fontVariantNumeric: "tabular-nums" }}>
+              {String(activeIndex + 1).padStart(2, "0")} / {String(n).padStart(2, "0")}
+            </span>
+            <div style={{ display: "flex", alignItems: "center", gap: "7px" }}>
+              {source.map((p, i) => (
+                <button
+                  key={p.id}
+                  onClick={() => goToIndex(i)}
+                  aria-label={`Go to ${p.title}`}
+                  style={{
+                    width: activeIndex === i ? "22px" : "7px", height: "7px",
+                    borderRadius: "9999px", border: "none", padding: 0, cursor: "pointer",
+                    background: activeIndex === i ? T.gold : "rgba(193,153,46,0.30)",
+                    transition: `all 0.3s ${T.easeSnap}`,
+                  }}
+                />
+              ))}
+            </div>
+          </div>
         )}
 
         {/* Quote strip */}

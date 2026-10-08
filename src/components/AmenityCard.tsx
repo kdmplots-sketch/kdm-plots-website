@@ -1,7 +1,15 @@
 import React from "react";
 import { T, useVP } from "@/lib/theme";
 import type { Amenity } from "@/lib/types";
-import { PhotoPlaceholder } from "@/components/PhotoPlaceholder";
+import { AMENITY_ICONS, IcoAmenityDefault } from "@/components/icons/AmenityIcons";
+
+const EASE = "cubic-bezier(0.32,0.72,0,1)";
+
+// Shared with InfrastructureSection so the carousel's drag/arrow step size
+// always matches the card's actual rendered width.
+export function getAmenityCardWidth(isMobile: boolean, w: number) {
+  return isMobile ? Math.max(176, Math.min(220, w - 96)) : 260;
+}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Infrastructure Section — Feature Item (glass card column)
@@ -39,64 +47,60 @@ export function InfraFeatureItem({
 // Infrastructure Section — Amenity Card
 // ─────────────────────────────────────────────────────────────────────────────
 export function AmenityCard({ amenity }: { amenity: Amenity }) {
-  const { isMobile } = useVP();
+  const { isMobile, w } = useVP();
   const [hovered, setHovered] = React.useState(false);
+  const [pressed, setPressed] = React.useState(false);
+  const Icon = AMENITY_ICONS[amenity.title] ?? IcoAmenityDefault;
+
+  // Fluid card width: scales with the viewport instead of jumping between
+  // two fixed breakpoints, so very narrow phones still get a sensible peek.
+  const cardW = getAmenityCardWidth(isMobile, w);
+
   return (
     <div
       onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+      onMouseLeave={() => { setHovered(false); setPressed(false); }}
+      onPointerDown={() => setPressed(true)}
+      onPointerUp={() => setPressed(false)}
       style={{
         position: "relative",
-        flex: isMobile ? "0 0 220px" : "0 0 260px",
-        height: "180px",
+        flex: `0 0 ${cardW}px`,
+        display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+        gap: "14px",
+        padding: "28px 20px",
         borderRadius: "18px",
-        overflow: "hidden",
+        background: T.white,
+        border: `1px solid ${hovered ? "rgba(193,153,46,0.48)" : "rgba(193,153,46,0.16)"}`,
         cursor: "pointer",
-        transition: "transform 0.35s cubic-bezier(0.22,1,0.36,1), box-shadow 0.35s ease",
-        transform: hovered ? "translateY(-6px) scale(1.015)" : "translateY(0) scale(1)",
+        transition: `transform 0.4s ${EASE}, box-shadow 0.4s ${EASE}, border-color 0.3s ${EASE}`,
+        transform: pressed
+          ? "translateY(-2px) scale(0.98)"
+          : hovered
+            ? "translateY(-7px) scale(1)"
+            : "translateY(0) scale(1)",
         boxShadow: hovered
-          ? "0 22px 56px rgba(8,14,28,0.26), 0 4px 14px rgba(8,14,28,0.12)"
-          : "0 6px 24px rgba(8,14,28,0.11), 0 2px 6px rgba(8,14,28,0.06)",
+          ? "0 22px 48px rgba(193,153,46,0.22), 0 4px 14px rgba(8,14,28,0.08)"
+          : "0 4px 18px rgba(8,14,28,0.06)",
         flexShrink: 0,
       }}
     >
-      <PhotoPlaceholder
-        patternId={`grid-amenity-${amenity.id}`}
-        style={{ transition: "transform 0.55s ease", transform: hovered ? "scale(1.06)" : "scale(1)" }}
-      />
       <div style={{
-        position: "absolute", inset: 0,
-        background: "linear-gradient(to top, rgba(6,12,24,0.92) 0%, rgba(6,12,24,0.40) 55%, rgba(6,12,24,0.05) 100%)",
-      }} />
-      <div style={{
-        position: "absolute", bottom: 0, left: 0, right: 0,
-        height: "2.5px",
-        background: `linear-gradient(90deg, ${T.gold}, rgba(193,153,46,0.3))`,
-        opacity: hovered ? 1 : 0.6,
-        transition: "opacity 0.3s",
-      }} />
-      <div style={{
-        position: "absolute", bottom: "14px", left: "16px", right: "16px",
-        display: "flex", alignItems: "center", gap: "8px",
+        width: "48px", height: "48px", borderRadius: "50%",
+        border: `1.5px solid rgba(193,153,46,0.32)`,
+        background: T.goldFaint,
+        display: "flex", alignItems: "center", justifyContent: "center",
+        flexShrink: 0,
+        transform: hovered ? "scale(1.1) rotate(-6deg)" : "scale(1) rotate(0deg)",
+        transition: `transform 0.4s ${EASE}`,
       }}>
-        <div style={{
-          width: "22px", height: "22px", borderRadius: "50%",
-          border: `1px solid rgba(193,153,46,0.55)`,
-          background: "rgba(6,12,24,0.50)",
-          display: "flex", alignItems: "center", justifyContent: "center",
-          backdropFilter: "blur(6px)", flexShrink: 0,
-        }}>
-          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke={T.gold} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M12 2C8.686 2 6 5 6 8.5c0 5 6 12 6 12s6-7 6-12C18 5 15.314 2 12 2z"/>
-            <circle cx="12" cy="8.5" r="2"/>
-          </svg>
-        </div>
-        <span style={{
-          fontFamily: T.sans, fontWeight: 700,
-          fontSize: "12px", letterSpacing: "0.06em",
-          textTransform: "uppercase", color: T.white, lineHeight: 1.2,
-        }}>{amenity.title}</span>
+        <Icon />
       </div>
+      <span style={{
+        fontFamily: T.sans, fontWeight: 700,
+        fontSize: "12px", letterSpacing: "0.08em",
+        textTransform: "uppercase", color: T.navy, lineHeight: 1.3,
+        textAlign: "center",
+      }}>{amenity.title}</span>
     </div>
   );
 }

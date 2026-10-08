@@ -17,10 +17,10 @@ export function BuyingProcessSection() {
           {/* LEFT — heading */}
           <div
             style={{
-              flex: "0 0 280px",
+              flex: isMobile ? "none" : "0 0 280px",
               opacity: visible ? 1 : 0,
               transform: visible ? "translateY(0)" : "translateY(24px)",
-              transition: "opacity 0.7s ease, transform 0.7s ease",
+              transition: `opacity 0.7s ${T.easeSmooth}, transform 0.7s ${T.easeSmooth}`,
             }}
           >
             <div style={{ width: "24px", height: "1.5px", background: T.gold, borderRadius: "9999px", marginBottom: "20px" }} />

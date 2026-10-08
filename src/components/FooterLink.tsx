@@ -12,19 +12,20 @@ export function FooterLink({ label, href = "#" }: { label: string; href?: string
       onMouseEnter={() => setHov(true)}
       onMouseLeave={() => setHov(false)}
       style={{
-        display: "flex", alignItems: "center", gap: "7px",
+        display: "flex", alignItems: "center", gap: "8px",
         fontFamily: T.sans, fontWeight: 400, fontSize: "13px",
         color: hov ? T.gold : "#5B6B82",
         textDecoration: "none",
-        transition: "color 0.2s",
-        paddingBottom: "10px",
+        transition: "color 0.3s cubic-bezier(0.32,0.72,0,1), transform 0.3s cubic-bezier(0.32,0.72,0,1)",
+        padding: "7px 0",
+        transform: hov ? "translateX(3px)" : "translateX(0)",
       }}
     >
       <span style={{
         display: "inline-block", width: "14px", height: "1px",
         background: hov ? T.gold : "rgba(193,153,46,0.35)",
-        borderRadius: "9999px", transition: "all 0.2s", flexShrink: 0,
-        transform: hov ? "scaleX(1.5)" : "scaleX(1)",
+        borderRadius: "9999px", transition: "all 0.3s cubic-bezier(0.32,0.72,0,1)", flexShrink: 0,
+        transform: hov ? "scaleX(1.6)" : "scaleX(1)",
         transformOrigin: "left",
       }} />
       {label}
@@ -52,7 +53,7 @@ export function SocialBtn({ icon, label, href = "#" }: { icon: React.ReactNode; 
         background: hov ? T.goldFaint : "transparent",
         display: "flex", alignItems: "center", justifyContent: "center",
         textDecoration: "none",
-        transition: "all 0.22s ease",
+        transition: `all 0.3s ${T.easeSnap}`,
         transform: hov ? "translateY(-3px)" : "translateY(0)",
       }}
     >

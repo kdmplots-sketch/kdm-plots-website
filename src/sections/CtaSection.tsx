@@ -40,21 +40,22 @@ export function CtaSection() {
           padding: isMobile ? "72px 20px" : isTablet ? "80px 40px" : "96px 80px",
           opacity: visible ? 1 : 0,
           transform: visible ? "translateY(0)" : "translateY(28px)",
-          transition: "opacity 0.7s ease, transform 0.7s ease",
+          transition: `opacity 0.7s ${T.easeSmooth}, transform 0.7s ${T.easeSmooth}`,
         }}
       >
         {/* Glassmorphism card */}
         <div style={{
-          display: "inline-flex", flexDirection: "column", gap: "28px",
+          display: "flex", flexDirection: "column", gap: "22px",
           maxWidth: isMobile ? "100%" : "520px",
           width: isMobile ? "100%" : undefined,
-          background: "rgba(248,245,239,0.72)",
+          boxSizing: "border-box",
+          background: "rgba(248,245,239,0.86)",
           backdropFilter: "blur(20px)",
           WebkitBackdropFilter: "blur(20px)",
-          borderRadius: "24px",
-          border: "1px solid rgba(193,153,46,0.18)",
-          boxShadow: "0 24px 64px rgba(8,14,28,0.12), 0 4px 16px rgba(8,14,28,0.06)",
-          padding: "48px 44px",
+          borderRadius: isMobile ? "18px" : "24px",
+          border: "1px solid rgba(193,153,46,0.22)",
+          boxShadow: "0 24px 64px rgba(8,14,28,0.14), 0 4px 16px rgba(8,14,28,0.06)",
+          padding: isMobile ? "30px 24px" : "48px 44px",
         }}>
           {/* Eyebrow */}
           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
@@ -90,7 +91,7 @@ export function CtaSection() {
                 fontFamily: T.sans, fontWeight: 700,
                 fontSize: "12px", letterSpacing: "0.12em", textTransform: "uppercase",
                 color: T.white, cursor: "pointer",
-                transition: "all 0.22s ease",
+                transition: `all 0.3s ${T.easeSnap}`,
                 boxShadow: hovBook ? "0 8px 28px rgba(193,153,46,0.45)" : "0 4px 16px rgba(193,153,46,0.28)",
                 transform: hovBook ? "translateY(-2px)" : "translateY(0)",
               }}
@@ -116,7 +117,7 @@ export function CtaSection() {
                 fontSize: "12px", letterSpacing: "0.10em", textTransform: "uppercase",
                 color: hovCall ? T.white : T.navy,
                 textDecoration: "none", cursor: "pointer",
-                transition: "all 0.22s ease",
+                transition: `all 0.3s ${T.easeSnap}`,
                 background: hovCall ? T.navy : "transparent",
                 transform: hovCall ? "translateY(-2px)" : "translateY(0)",
               } as React.CSSProperties}

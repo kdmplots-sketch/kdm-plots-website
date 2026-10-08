@@ -1,11 +1,95 @@
 import React from "react";
 import { T, useVP } from "@/lib/theme";
 import type { Amenity } from "@/lib/types";
-import { PhotoPlaceholder } from "@/components/PhotoPlaceholder";
-import { InfraFeatureItem, AmenityCard } from "@/components/AmenityCard";
+import { InfraFeatureItem, AmenityCard, getAmenityCardWidth } from "@/components/AmenityCard";
 import { CarouselArrow } from "@/components/CarouselArrow";
 import { IcoRoads, IcoStreetLight, IcoDrainage, IcoPlantation, IcoSecurityShield, IcoElectricity, IcoWater, IcoDTCP } from "@/components/icons/InfrastructureIcons";
 import { useBookingModal } from "@/lib/BookingContext";
+import { useInView } from "@/lib/useInView";
+
+const SHOWCASE_EASE = "cubic-bezier(0.22,1,0.36,1)";
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Infrastructure Section — Stat showcase panel (no photography required)
+// ─────────────────────────────────────────────────────────────────────────────
+const SHOWCASE_STATS = [
+  { icon: <IcoRoads />,          value: "30–60 FT",  label: "Blacktop Roads" },
+  { icon: <IcoSecurityShield />, value: "24×7",       label: "Security & CCTV" },
+  { icon: <IcoWater />,          value: "100%",       label: "Water Connection" },
+  { icon: <IcoDTCP />,           value: "100%",       label: "DTCP & RERA Approved" },
+];
+
+function InfraStatCell({
+  icon, value, label, delay, visible,
+}: { icon: React.ReactNode; value: string; label: string; delay: number; visible: boolean }) {
+  const [hov, setHov] = React.useState(false);
+  return (
+    <div
+      onMouseEnter={() => setHov(true)}
+      onMouseLeave={() => setHov(false)}
+      style={{
+        position: "relative",
+        padding: "24px 20px",
+        borderRadius: "16px",
+        background: hov ? "rgba(193,153,46,0.09)" : "rgba(255,255,255,0.03)",
+        border: `1px solid ${hov ? "rgba(193,153,46,0.40)" : "rgba(193,153,46,0.14)"}`,
+        display: "flex", flexDirection: "column", gap: "12px",
+        opacity: visible ? 1 : 0,
+        transform: visible ? (hov ? "translateY(-4px)" : "translateY(0)") : "translateY(18px)",
+        transition: `opacity 0.6s ${SHOWCASE_EASE} ${delay}ms, transform 0.45s ${SHOWCASE_EASE}`,
+      }}
+    >
+      <div style={{
+        width: "40px", height: "40px", borderRadius: "10px",
+        border: `1px solid rgba(193,153,46,0.4)`,
+        background: "rgba(193,153,46,0.10)",
+        display: "flex", alignItems: "center", justifyContent: "center",
+        transform: hov ? "scale(1.08) rotate(-4deg)" : "scale(1)",
+        transition: `transform 0.35s ${SHOWCASE_EASE}`,
+      }}>
+        {icon}
+      </div>
+      <div>
+        <p style={{ fontFamily: T.serif, fontWeight: 700, fontSize: "22px", color: T.white, margin: 0, lineHeight: 1.1 }}>{value}</p>
+        <p style={{ fontFamily: T.sans, fontWeight: 500, fontSize: "11.5px", color: "rgba(255,255,255,0.56)", margin: "4px 0 0", lineHeight: 1.4 }}>{label}</p>
+      </div>
+    </div>
+  );
+}
+
+function InfraShowcasePanel() {
+  const { isMobile } = useVP();
+  const [ref, visible] = useInView(0.25);
+  return (
+    <div
+      ref={ref}
+      style={{
+        position: "relative",
+        borderRadius: "24px",
+        overflow: "hidden",
+        boxShadow: "0 32px 80px rgba(8,14,28,0.20), 0 8px 24px rgba(8,14,28,0.10)",
+        background: "linear-gradient(135deg, #0A1628 0%, #0F1F35 50%, #0D1A2D 100%)",
+        padding: isMobile ? "32px 20px" : "48px",
+      }}
+    >
+      {/* Ambient gold glow */}
+      <div style={{
+        position: "absolute", inset: 0, pointerEvents: "none",
+        background: "radial-gradient(circle at 15% 15%, rgba(193,153,46,0.14) 0%, transparent 50%), radial-gradient(circle at 85% 85%, rgba(193,153,46,0.10) 0%, transparent 50%)",
+      }} />
+      <div style={{ position: "relative", marginBottom: isMobile ? "20px" : "28px" }}>
+        <span style={{ fontFamily: T.sans, fontWeight: 700, fontSize: "10px", letterSpacing: "0.26em", textTransform: "uppercase", color: T.gold }}>
+          Numbers That Define Quality
+        </span>
+      </div>
+      <div style={{ position: "relative", display: "grid", gridTemplateColumns: "1fr 1fr", gap: isMobile ? "12px" : "16px" }}>
+        {SHOWCASE_STATS.map((s, i) => (
+          <InfraStatCell key={s.label} icon={s.icon} value={s.value} label={s.label} delay={i * 110} visible={visible} />
+        ))}
+      </div>
+    </div>
+  );
+}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Infrastructure Section — Amenity Data
@@ -30,18 +114,39 @@ const AMENITIES: Amenity[] = [
 // Infrastructure Section — Main Component
 // ─────────────────────────────────────────────────────────────────────────────
 export function InfrastructureSection() {
-  const { isMobile, isTablet } = useVP();
+  const { isMobile, isTablet, w } = useVP();
   const { open: openBooking } = useBookingModal();
-  const CARD_W  = isMobile ? 220 : 260;
+  const CARD_W  = getAmenityCardWidth(isMobile, w);
   const CARD_GAP = 16;
   const STEP    = CARD_W + CARD_GAP;
-  const VISIBLE_COUNT = 6;
   const [offset, setOffset]       = React.useState(0);
   const [dragging, setDragging]   = React.useState(false);
   const [startX, setStartX]       = React.useState(0);
   const [dragDelta, setDragDelta] = React.useState(0);
   const [autoPaused, setAutoPaused] = React.useState(false);
-  const maxOffset = Math.max(0, (AMENITIES.length - VISIBLE_COUNT) * STEP);
+  const trackContainerRef = React.useRef<HTMLDivElement>(null);
+  const [containerW, setContainerW] = React.useState(0);
+
+  // Measure the actual visible width so the scroll range always reaches the
+  // last card — a fixed "N cards visible" assumption undershoots on phones,
+  // where only ~1.6 cards fit, cutting the tail of the carousel off early.
+  React.useLayoutEffect(() => {
+    function measure() {
+      if (trackContainerRef.current) setContainerW(trackContainerRef.current.clientWidth);
+    }
+    measure();
+    const ro = new ResizeObserver(measure);
+    if (trackContainerRef.current) ro.observe(trackContainerRef.current);
+    return () => ro.disconnect();
+  }, []);
+
+  const visibleCount = containerW > 0 ? containerW / STEP : 6;
+  const maxOffset = Math.max(0, (AMENITIES.length - visibleCount) * STEP);
+
+  // Keep the track in range if a resize shrinks maxOffset below the current offset
+  React.useEffect(() => {
+    setOffset(prev => Math.min(prev, maxOffset));
+  }, [maxOffset]);
 
   function slideBy(delta: number) {
     setOffset(prev => Math.min(maxOffset, Math.max(0, prev + delta)));
@@ -92,7 +197,7 @@ export function InfrastructureSection() {
       <div style={{
         maxWidth: "1440px", margin: "0 auto",
         padding: isMobile ? "72px 20px 0" : isTablet ? "80px 40px 0" : "96px 80px 0",
-        display: "flex", flexDirection: isMobile ? "column" : "row", alignItems: isMobile ? "stretch" : "center", gap: isMobile ? "40px" : "60px",
+        display: "flex", flexDirection: isMobile ? "column" : "row", alignItems: isMobile ? "stretch" : "flex-start", gap: isMobile ? "40px" : "60px",
       }}>
 
         {/* Left: editorial text */}
@@ -137,29 +242,27 @@ export function InfrastructureSection() {
           </div>
         </div>
 
-        {/* Right: panoramic image */}
+        {/* Right: stat showcase panel */}
         <div style={{ flex: 1, position: "relative" }}>
-          {/* White bleed into left text */}
-          <div style={{
-            position: "absolute", top: 0, left: 0, bottom: 0, width: "72px",
-            background: `linear-gradient(to right, ${T.ivory}, transparent)`,
-            zIndex: 2, pointerEvents: "none",
-          }} />
-          <div style={{
-            borderRadius: "24px", overflow: "hidden",
-            boxShadow: "0 32px 80px rgba(8,14,28,0.17), 0 8px 24px rgba(8,14,28,0.08)",
-            lineHeight: 0,
-          }}>
-            <PhotoPlaceholder patternId="grid-infra-panorama" fill={false} style={{ width: "100%", height: "440px" }} />
-          </div>
+          {!isMobile && (
+            <div style={{
+              position: "absolute", top: 0, left: 0, bottom: 0, width: "72px",
+              background: `linear-gradient(to right, ${T.ivory}, transparent)`,
+              zIndex: 2, pointerEvents: "none",
+            }} />
+          )}
+          <InfraShowcasePanel />
         </div>
       </div>
 
       {/* ════ INFRASTRUCTURE FEATURES GLASS CARD ════ */}
+      {/* A positive top margin here (rather than a negative pull-up) means this
+          card can never overlap the hero row above it, regardless of which of
+          the two hero columns ends up taller at a given viewport width. */}
       <div style={{
         maxWidth: "1440px", margin: "0 auto",
         padding: isMobile ? "0 16px" : isTablet ? "0 40px" : "0 80px",
-        marginTop: "-24px",
+        marginTop: isMobile ? "32px" : "40px",
         position: "relative", zIndex: 4,
       }}>
         <div style={{
@@ -203,6 +306,7 @@ export function InfrastructureSection() {
 
         {/* Draggable track */}
         <div
+          ref={trackContainerRef}
           style={{ overflow: "hidden", cursor: dragging ? "grabbing" : "grab", touchAction: "pan-y" }}
           onPointerDown={onPointerDown}
           onPointerMove={onPointerMove}
@@ -217,7 +321,7 @@ export function InfrastructureSection() {
             display: "flex",
             gap: `${CARD_GAP}px`,
             transform: `translateX(${-(offset) + dragDelta}px)`,
-            transition: dragging ? "none" : "transform 0.52s cubic-bezier(0.25,1,0.5,1)",
+            transition: dragging ? "none" : "transform 0.62s cubic-bezier(0.22,1,0.36,1)",
             willChange: "transform",
             userSelect: "none",
             paddingBottom: "8px",
@@ -289,7 +393,7 @@ export function InfrastructureSection() {
                 fontFamily: T.sans, fontWeight: 700,
                 fontSize: "12px", letterSpacing: "0.12em",
                 textTransform: "uppercase", color: T.navy,
-                cursor: "pointer", transition: "all 0.25s ease",
+                cursor: "pointer", transition: `all 0.3s ${T.easeSnap}`,
                 whiteSpace: "nowrap",
                 boxSizing: "border-box",
               }}

@@ -73,7 +73,7 @@ export function ProjectCard({ project }: { project: Project }) {
         width: "100%",
         height: `${cardH}px`,
         cursor: "pointer",
-        transition: "transform 0.35s cubic-bezier(0.22,1,0.36,1), box-shadow 0.35s ease",
+        transition: `transform 0.35s ${T.easeSmooth}, box-shadow 0.35s ${T.easeSmooth}`,
         transform: hovered ? "translateY(-7px)" : "translateY(0)",
         boxShadow: hovered
           ? "0 28px 72px rgba(8,14,28,0.30), 0 6px 20px rgba(8,14,28,0.14)"
@@ -81,10 +81,22 @@ export function ProjectCard({ project }: { project: Project }) {
       }}
     >
       {/* ── PROJECT SURFACE ── */}
-      <PhotoPlaceholder
-        patternId={`grid-project-${project.id}`}
-        style={{ transition: "transform 0.55s ease", transform: hovered ? "scale(1.05)" : "scale(1)" }}
-      />
+      {project.images && project.images.length > 0 ? (
+        <img
+          src={project.images[0]}
+          alt={`${project.title} — ${project.location}`}
+          style={{
+            position: "absolute", inset: 0,
+            width: "100%", height: "100%", objectFit: "cover", display: "block",
+            transition: `transform 0.55s ${T.easeSmooth}`, transform: hovered ? "scale(1.05)" : "scale(1)",
+          }}
+        />
+      ) : (
+        <PhotoPlaceholder
+          patternId={`grid-project-${project.id}`}
+          style={{ transition: `transform 0.55s ${T.easeSmooth}`, transform: hovered ? "scale(1.05)" : "scale(1)" }}
+        />
+      )}
 
       {/* Gradient overlay */}
       <div style={{
