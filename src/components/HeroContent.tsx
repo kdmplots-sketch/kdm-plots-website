@@ -101,7 +101,7 @@ export function HeroContent() {
   variant="gold"
   onClick={() => document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" })}
 />
-        <Btn label="Book a Visit" variant="outline-white" icon={false} onClick={openBooking} />
+        <Btn label="Book a Visit" variant="outline-white" icon={false} onClick={() => openBooking()} />
       </div>
     </div>
   );

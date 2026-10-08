@@ -100,8 +100,11 @@ export function BookVisitModal({ isOpen, onClose, projectName = null }: { isOpen
       `Preferred Time: ${formatTime12h(time)}\n\n` +
       `Please confirm my appointment.`;
 
-    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`, "_blank", "noopener,noreferrer");
+    // Same-tab navigation (not window.open) — the reliable way to hand off
+    // to the WhatsApp app on mobile. A JS-opened new tab is frequently
+    // blocked or left blank by mobile browsers instead of actually navigating.
     onClose();
+    window.location.href = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
   }
 
   if (!isOpen) return null;

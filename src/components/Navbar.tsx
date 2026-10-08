@@ -137,7 +137,7 @@ export function Navbar() {
           )}
 
           <div style={{ display: "flex", alignItems: "center", gap: "10px", paddingRight: showHamburger ? "6px" : "4px", flexShrink: 0 }}>
-            {!showHamburger && <Btn label="Book a Visit" variant="gold" size="sm" onClick={openBooking} />}
+            {!showHamburger && <Btn label="Book a Visit" variant="gold" size="sm" onClick={() => openBooking()} />}
 
             {/* Hamburger → X morph */}
             {showHamburger && (

@@ -80,7 +80,7 @@ export function CtaSection() {
           <div style={{ display: "flex", alignItems: "center", gap: "14px", flexWrap: "wrap" }}>
             {/* Primary */}
             <button
-              onClick={openBooking}
+              onClick={() => openBooking()}
               onMouseEnter={() => setHovBook(true)}
               onMouseLeave={() => setHovBook(false)}
               style={{

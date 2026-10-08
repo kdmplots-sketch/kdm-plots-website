@@ -194,6 +194,32 @@ export function FeaturedProjectsSection() {
     setTrackPos(prev => prev + dir);
   }
 
+  // ── Swipe gesture (touch + mouse drag) ──
+  const dragRef = React.useRef<{ startX: number; dx: number; active: boolean } | null>(null);
+  const [dragX, setDragX] = React.useState(0);
+  const SWIPE_THRESHOLD = 40;
+
+  function dragStart(clientX: number) {
+    if (sliding || !cardW) return;
+    dragRef.current = { startX: clientX, dx: 0, active: true };
+    setAutoPaused(true);
+  }
+  function dragMove(clientX: number) {
+    if (!dragRef.current?.active) return;
+    const dx = clientX - dragRef.current.startX;
+    dragRef.current.dx = dx;
+    setDragX(dx);
+  }
+  function dragEnd() {
+    const d = dragRef.current;
+    dragRef.current = null;
+    setAutoPaused(false);
+    if (!d?.active) return;
+    setDragX(0);
+    if (d.dx <= -SWIPE_THRESHOLD) go(1);
+    else if (d.dx >= SWIPE_THRESHOLD) go(-1);
+  }
+
   // Real (non-cloned) index of the currently leading card — drives the dot/counter UI
   const activeIndex = n > 0 ? ((trackPos % n) + n) % n : 0;
 
@@ -396,10 +422,14 @@ export function FeaturedProjectsSection() {
         <div
           ref={containerRef}
           onMouseEnter={() => setAutoPaused(true)}
-          onMouseLeave={() => setAutoPaused(false)}
-          onTouchStart={() => setAutoPaused(true)}
-          onTouchEnd={() => setAutoPaused(false)}
-          style={{ overflow: "hidden" }}
+          onMouseLeave={() => { setAutoPaused(false); dragEnd(); }}
+          onTouchStart={e => dragStart(e.touches[0].clientX)}
+          onTouchMove={e => dragMove(e.touches[0].clientX)}
+          onTouchEnd={dragEnd}
+          onMouseDown={(e: React.MouseEvent) => dragStart(e.clientX)}
+          onMouseMove={(e: React.MouseEvent) => dragMove(e.clientX)}
+          onMouseUp={dragEnd}
+          style={{ overflow: "hidden", touchAction: "pan-y", cursor: dragRef.current?.active ? "grabbing" : "grab" }}
         >
           {cardW > 0 && (
             <div
@@ -409,9 +439,9 @@ export function FeaturedProjectsSection() {
                 display: "flex",
                 gap: `${GAP_PX}px`,
                 alignItems: "flex-start",
-                transform: `translateX(${translateX}px)`,
-                // Animate ONLY when sliding; removed to "none" during silent index jump
-                transition: sliding ? "transform 0.68s cubic-bezier(0.22,1,0.36,1)" : "none",
+                transform: `translateX(${translateX + dragX}px)`,
+                // Animate ONLY when sliding; removed to "none" during silent index jump/drag
+                transition: sliding && !dragRef.current?.active ? "transform 0.68s cubic-bezier(0.22,1,0.36,1)" : "none",
                 willChange: "transform",
               }}
             >
@@ -481,7 +511,7 @@ export function FeaturedProjectsSection() {
               />
             </div>
             <button
-              onClick={openBooking}
+              onClick={() => openBooking()}
               style={{
                 display: "inline-flex", alignItems: "center", gap: "9px",
                 padding: "13px 30px", border: `1.5px solid ${T.navy}`, borderRadius: "5px",

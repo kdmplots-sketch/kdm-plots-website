@@ -382,7 +382,7 @@ export function InfrastructureSection() {
           {/* CTA */}
           <div style={{ flex: "0 0 auto", paddingLeft: isMobile ? "0" : "32px", width: isMobile ? "100%" : "auto" }}>
             <button
-              onClick={openBooking}
+              onClick={() => openBooking()}
               style={{
                 display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "10px",
                 width: isMobile ? "100%" : "auto",
