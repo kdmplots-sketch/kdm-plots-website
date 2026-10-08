@@ -127,7 +127,7 @@ function SocialRow() {
             <polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02"/>
           </svg>
         } />
-        <SocialBtn label="WhatsApp" icon={
+        <SocialBtn label="WhatsApp" href="https://wa.me/918220563394?text=Hi%20KDM%20Plots%2C%20I%27m%20interested%20in%20your%20projects.%20Could%20you%20share%20more%20details%3F" icon={
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={T.gold} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
             <path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/>
           </svg>
